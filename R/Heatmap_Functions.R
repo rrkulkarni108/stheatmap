@@ -1,3 +1,17 @@
+#' Functions that visualize spatiotemporal data using heatmaps
+#'
+#' @param X n by p matrix containing n data points to cluster.
+#' @param K An integer specifying number of clusters.
+#' @param M K by p matrix of cluster centers.
+#'
+#' @return Explain return
+#' @export
+#'
+#' @examples
+#' # Give example
+
+
+
 # Functions that visualize spatiotemporal data using heatmaps
 
 # Function that subsets the data and reformats to be appropriate input for other functions
