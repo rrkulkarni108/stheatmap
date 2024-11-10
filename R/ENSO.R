@@ -72,3 +72,45 @@ assignENSOColors <- function(data) {
 }
 
 
+# Plotting function
+plotENSOIndex <- function(data) {
+  # Plot using ggplot
+  p <- ggplot(data, aes(x = abs(Values), y = YrMon, fill = Color)) +
+    geom_bar(stat = "identity", color = "black") +
+    scale_fill_identity() +
+    theme_minimal() +
+    theme(
+      axis.text.y = element_text(size = 10),
+      axis.title.y = element_text(size = 15),
+      axis.title.x = element_text(size = 15),
+      plot.title = element_text(size = 20, hjust = 0.5)
+    ) +
+    labs(
+      x = "Monthly Nino 3.4 Region Average",
+      y = "Time",
+      title = "Oceanic Niño Index, 2001-2021\nENSO Intensities by Month"
+    ) +
+    coord_flip() +
+    theme(panel.grid.minor = element_blank())
+
+  # Add legend
+  legend_labels <- c(
+    'Weak El Niño' = '#F1959B',
+    'Medium El Niño' = '#F07470',
+    'Strong El Niño' = '#EA4C46',
+    'Very Strong El Niño' = '#DC1C13',
+    'Weak La Niña' = '#2A9DF4',
+    'Medium La Niña' = '#1167B1',
+    'Strong La Niña' = '#003D80',
+    'ENSO Neutral' = '#d3d3d3'
+  )
+
+  p <- p + scale_fill_manual(
+    values = legend_labels,
+    breaks = names(legend_labels),
+    name = "ENSO Phase"
+  )
+
+  print(p)
+}
+
