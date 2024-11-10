@@ -114,3 +114,28 @@ plotENSOIndex <- function(data) {
   print(p)
 }
 
+# Main function which calls the subfunctions
+enso_main <- function(data) {
+  # Reshape data to long format
+  data_long <- data %>%
+    pivot_longer(
+      cols = -c(`ENSO Type`, Season),
+      names_to = "Month",
+      values_to = "Values"
+    ) %>%
+    mutate(
+      YrMon = paste(Season, Month, sep = "-"),
+      YrMon = factor(YrMon, levels = unique(YrMon))
+    )
+
+  # Assign colors for plotting
+  colored_data <- assignENSOColors(data_long)
+
+  # Plot the data
+  plotENSOIndex(colored_data)
+}
+
+# tester code
+enso_main(enso_data)
+
+
