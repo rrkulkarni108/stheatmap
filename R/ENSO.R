@@ -50,4 +50,25 @@ return (enso_long)
 
 }
 
-makeLongForm(enso_data)
+#makeLongForm(enso_data)
+
+
+library(ggplot2)
+
+# Assign ENSO phase colors based on value
+assignENSOColors <- function(data) {
+  data <- data %>%
+    mutate(Color = case_when(
+      Values >= 0.5 & Values < 1.0 ~ '#F1959B',   # Weak El Niño
+      Values >= 1.0 & Values < 1.5 ~ '#F07470',   # Medium El Niño
+      Values >= 1.5 & Values < 2.0 ~ '#EA4C46',   # Strong El Niño
+      Values >= 2.0 ~ '#DC1C13',                  # Very Strong El Niño
+      Values <= -0.5 & Values > -1.0 ~ '#2A9DF4', # Weak La Niña
+      Values <= -1.0 & Values > -1.5 ~ '#1167B1', # Medium La Niña
+      Values <= -1.5 ~ '#003D80',                 # Strong La Niña
+      TRUE ~ '#d3d3d3'                            # ENSO Neutral
+    ))
+  return(data)
+}
+
+
