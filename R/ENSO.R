@@ -75,8 +75,28 @@ assignENSOColors <- function(data) {
   return(data)
 }
 
+## PLOT 1: Plot time series curve (overall pattern)
 
-# Plotting function
+timeSeriesPlot <- function(data) {
+  # Plot time series
+  options(repr.plot.width = 20, repr.plot.height = 8)
+  ggplot(data, aes(x = YrMon, y = Values, group = 1)) +
+    geom_line(color = "blue") +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, size = 10),
+      axis.text.y = element_text(size = 10),
+      axis.title = element_text(size = 10),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.title = element_text(size = 10, hjust = 0.5)
+    ) +
+    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 12)]) +
+    labs(x = "Time", y = "Average ONI Value", title = "Time Series of ONI Averages in NINO 3.4 Region")
+}
+
+
+## PLOT 2: MAIN PLOT
 plotENSOIndex <- function(data) {
   # Plot using ggplot
   p <- ggplot(data, aes(x = abs(Values), y = YrMon, fill = Color)) +
