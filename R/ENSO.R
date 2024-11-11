@@ -201,7 +201,8 @@ enso_main <- function(data, StartDate, EndDate) {
 
 
   #Plot 1 - overall time series to get general picture
-  timeSeriesPlot(plot_data)
+  q <- timeSeriesPlot(plot_data)
+  q
 
   # Assign colors for plotting
   colored_data <- assignENSOColors(plot_data)
@@ -210,30 +211,30 @@ enso_main <- function(data, StartDate, EndDate) {
   # Plot 2- plot the data- main plot
   p <-  plotENSOSeries(colored_data)
   p
-  return(p)
+  return(list(q,p))
 }
 
 # tester code
-enso_data = enso_data[,2:11]
-enso_main(enso_data, "2000-2001",  "2020-2021")
+#enso_data = enso_data[,2:11]
+#enso_main(enso_data, "2000-2001",  "2020-2021")
 
-# sample_data <- data.frame(
-#   Season = c("2000-2001", "2001-2002"),
-#   JJA = c(-0.6, -0.1),
-#   JAS = c(-0.5, -0.1),
-#   ASO = c(-0.5, -0.2),
-#   SON = c(-0.6, -0.3),
-#   OND = c(-0.7, -0.3),
-#   NDJ = c(-0.7, -0.3),
-#   DJF = c(-0.7, -0.1),
-#   JFM = c(-0.5, 0.0),
-#   FMA = c(-0.4, 0.2),
-#   MAM = c(-0.3, 0.2),
-#   AMJ = c(-0.3, 0.4),
-#   MJJ = c(-0.1, 0.7)
-# )
-# print(sample_data)
-# enso_main(sample_data, "2000-2001", "2001-2002")
+sample_data <- data.frame(
+  Season = c("2000-2001", "2001-2002"),
+  JJA = c(-0.6, -0.1),
+  JAS = c(-0.5, -0.1),
+  ASO = c(-0.5, -0.2),
+  SON = c(-0.6, -0.3),
+  OND = c(-0.7, -0.3),
+  NDJ = c(-0.7, -0.3),
+  DJF = c(-0.7, -0.1),
+  JFM = c(-0.5, 0.0),
+  FMA = c(-0.4, 0.2),
+  MAM = c(-0.3, 0.2),
+  AMJ = c(-0.3, 0.4),
+  MJJ = c(-0.1, 0.7)
+)
+print(sample_data)
+enso_main(sample_data, "2000-2001", "2001-2002")
 
 
 
