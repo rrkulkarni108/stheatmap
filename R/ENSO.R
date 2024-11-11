@@ -11,8 +11,14 @@
 #' @examples
 #' # Give example
 #' # Load the data
-#' enso_data <- read_excel("Data/ENSO.xlsx")
-#' enso_main(enso_data, "2000-2001",  "2020-2021")
+#' sample_data <- data.frame(
+#' Season = c("2000-2001", "2001-2002"),
+#' JJA = c(1.2, 0.5),
+#' JAS = c(0.3, -0.4),
+#' ASO = c(-0.5, -0.7)
+#' )
+#' print(sample_data)
+#' enso_main(sample_data, "2000-2001", "2001-2002")
 
 
 library(dplyr)
@@ -43,16 +49,20 @@ rollingAvg <- function(enso_arr) {
   # Since my desired data range starts from January of 2001, I ignore the first five entries of 2000
   # and start with the the 6th entry- which is the 3month average ONI for december 2000, january 2001 and february 2001.
   # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
+  print(enso_arr)
   for (i in 6:length(enso_arr)) {
     if (!is.na(enso_arr[i]) && !is.na(enso_arr[i + 1]) && !is.na(enso_arr[i + 2])) {
       avg_val <- mean(enso_arr[i:(i + 2)])
+      #print(avg_val)
       val_arr <- c(val_arr, avg_val)
+      #print(val_arr)
     } else {
       break
     }
   }
+  #print(val_arr)
   val_arr <- round(val_arr, 2)
-  print(val_arr)
+
 
   return (val_arr)
 
@@ -60,7 +70,10 @@ rollingAvg <- function(enso_arr) {
 
 
 
-
+## ONI value >= 0.5 and <1 is considered a weak El Niño, >=1.0 to <1.5 a moderate El Niño,
+#  >=1.5 and <2 a strong El Niño, and >=2 a very strong El Niño;
+#  similarly, values <= -0.5 and values > -1.0 is a weak La Niña,
+#  values <= -1.0 and values > -1.5 a moderate La Niña, and <= -1.5 a strong La Niña
 
 # Assign ENSO phase colors based on value
 assignENSOColors <- function(data) {
@@ -131,11 +144,13 @@ plotENSOSeries <- function(data) {
 # Main function which calls the subfunctions
 enso_main <- function(data, StartDate, EndDate) {
   # Reshape data to long format
-  enso <- findDateSubset(data, StartDate, EndDate) %>%
-    rename(EnsoType = `ENSO Type`)
+  enso <- findDateSubset(data, StartDate, EndDate)
 
   # Extract only the relevant columns (exclude first two)
-  enso_subset <- enso %>% select(-c(EnsoType, Season))
+  if("EnsoType" %in% colnames(enso)){
+    enso_subset <- enso %>% select(-c(EnsoType, Season))
+  }
+  enso_subset <- enso %>% select(-c(Season))
   enso_arr <- as.vector(t(enso_subset))
   val_arr <- rollingAvg(enso_arr)
 
@@ -162,13 +177,21 @@ enso_main <- function(data, StartDate, EndDate) {
 
   # Plot 2- plot the data- main plot
   p <-  plotENSOSeries(colored_data)
+  p
   return(p)
 }
 
 # tester code
-enso_main(enso_data, "2000-2001",  "2020-2021")
+#enso_main(enso_data, "2000-2001",  "2020-2021")
 
-
+sample_data <- data.frame(
+Season = c("2000-2001", "2001-2002"),
+JJA = c(1.2, 0.5),
+JAS = c(0.3, -0.4),
+ASO = c(-0.5, -0.7)
+)
+print(sample_data)
+enso_main(sample_data, "2000-2001", "2001-2002")
 
 
 
