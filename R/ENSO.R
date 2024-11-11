@@ -35,8 +35,6 @@ library(lubridate)
 library(readxl)
 library(ggplot2)
 
-# Load the data
-enso_data <- readxl::read_excel("Data/ENSO.xlsx")
 
 ## Function takes in dataframe from any timepoint of this website (it is updated frequently) https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
 ## StartDate string value for season start date "year1-year2"
@@ -58,13 +56,11 @@ rollingAvg <- function(enso_arr) {
   # Since my desired data range starts from January of 2001, I ignore the first five entries of 2000
   # and start with the the 6th entry- which is the 3month average ONI for december 2000, january 2001 and february 2001.
   # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
-  print(enso_arr)
+  #print(enso_arr)
   for (i in 6:length(enso_arr)) {
     if (!is.na(enso_arr[i]) && !is.na(enso_arr[i + 1]) && !is.na(enso_arr[i + 2])) {
       avg_val <- mean(enso_arr[i:(i + 2)])
-      #print(avg_val)
       val_arr <- c(val_arr, avg_val)
-      #print(val_arr)
     } else {
       break
     }
@@ -146,8 +142,8 @@ plotENSOSeries <- function(data) {
     '#003D80' = 'Strong La Niña',
     '#d3d3d3' = 'ENSO Neutral'
   )
-  print("this is printed")
-  print(data$ENSO_Type)
+  #print("this is printed")
+  #print(data$ENSO_Type)
   options(repr.plot.width = 30, repr.plot.height = 200)
   ggplot(data, aes(y = reorder(YrMon, DATE), x = abs(Values), fill = Color)) +
 
@@ -215,6 +211,8 @@ enso_main <- function(data, StartDate, EndDate) {
 }
 
 # tester code
+# Load the data
+#enso_data <- readxl::read_excel("Data/ENSO.xlsx")
 #enso_data = enso_data[,2:11]
 #enso_main(enso_data, "2000-2001",  "2020-2021")
 
