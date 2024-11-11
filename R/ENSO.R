@@ -1,24 +1,27 @@
 #' Functions that create a ENSO Time Series Plot of ONI values
 #'
+#' @name enso_main
 #' @param dataframe n by p matrix containing ONI values, from National Weather Service, Climate Prediction Center: https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
 #' @param StartDate string value for season start date "year1-year2", the starting date of your subset, i.e. "2000-2001", comes from season column of the dataframe
 #' @param EndDate string value for season end date "year19-year20", the starting date of your subset, i.e. "2020-2021", comes from season column of the dataframe
 #'
-#' @return Explain return
+#' @return p Main package plot which is a barplot visualization of the ENSO intensities by month
 #' @export
 #'
 #' @examples
 #' # Give example
+#' # Load the data
+#' enso_data <- read_excel("Data/ENSO.xlsx")
+#' enso_main(enso_data, "2000-2001",  "2020-2021")
 
 
 library(dplyr)
-library(tidyr)
-library(readxl)
 library(lubridate)
+library(readxl)
 library(ggplot2)
 
 # Load the data
-enso_data <- read_excel("Data/ENSO.xlsx")
+enso_data <- readxl::read_excel("Data/ENSO.xlsx")
 
 ## Function takes in dataframe from any timepoint of this website (it is updated frequently) https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
 ## StartDate string value for season start date "year1-year2"
@@ -128,7 +131,7 @@ plotENSOSeries <- function(data) {
 # Main function which calls the subfunctions
 enso_main <- function(data, StartDate, EndDate) {
   # Reshape data to long format
-  enso <- find_date_subset(data, StartDate, EndDate) %>%
+  enso <- findDateSubset(data, StartDate, EndDate) %>%
     rename(EnsoType = `ENSO Type`)
 
   # Extract only the relevant columns (exclude first two)
@@ -157,12 +160,13 @@ enso_main <- function(data, StartDate, EndDate) {
   # Assign colors for plotting
   colored_data <- assignENSOColors(plot_data)
 
-  # Plot the data- main plot
-  plotENSOSeries(colored_data)
+  # Plot 2- plot the data- main plot
+  p <-  plotENSOSeries(colored_data)
+  return(p)
 }
 
 # tester code
-enso_main(enso_data, StartDate, EndDate)
+enso_main(enso_data, "2000-2001",  "2020-2021")
 
 
 
