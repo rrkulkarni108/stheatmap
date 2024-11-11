@@ -126,19 +126,43 @@ plotENSOSeries <- function(data) {
 
 
 # Main function which calls the subfunctions
-enso_main <- function(data) {
+enso_main <- function(data, StartDate, EndDate) {
   # Reshape data to long format
+  enso <- find_date_subset(data, StartDate, EndDate) %>%
+    rename(EnsoType = `ENSO Type`)
 
+  # Extract only the relevant columns (exclude first two)
+  enso_subset <- enso %>% select(-c(EnsoType, Season))
+  enso_arr <- as.vector(t(enso_subset))
+  val_arr <- rollingAvg(enso_arr)
+
+  # Extract years labels from Season column
+  yrs <- c()
+  for (season in enso$Season) {
+    year2 <- unlist(strsplit(season, "-"))[2]
+    yrs <- c(yrs, rep(year2, 12))
+  }
+  yrs <- yrs[1:length(val_arr)]
+
+  # create dataframe to be used for plotting
+  # Create data frame
+  months <- rep(1:12, length.out = length(val_arr))
+  plot_data <- data.frame(Year = yrs, Month = months, Values = val_arr)
+  plot_data <- plot_data %>% mutate(DATE = make_date(Year, Month, 1), YrMon = format(DATE, "%Y-%m"))
+
+
+  #Plot 1 - overall time series to get general picture
+  timeSeriesPlot(plot_data)
 
   # Assign colors for plotting
-  colored_data <- assignENSOColors(data_long)
+  colored_data <- assignENSOColors(plot_data)
 
-  # Plot the data
-  plotENSOIndex(colored_data)
+  # Plot the data- main plot
+  plotENSOSeries(colored_data)
 }
 
 # tester code
-enso_main(enso_data)
+enso_main(enso_data, StartDate, EndDate)
 
 
 
