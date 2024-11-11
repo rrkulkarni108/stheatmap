@@ -79,23 +79,33 @@ rollingAvg <- function(enso_arr) {
 
 
 
-## ONI value >= 0.5 and <1 is considered a weak El Niño, >=1.0 to <1.5 a moderate El Niño,
-#  >=1.5 and <2 a strong El Niño, and >=2 a very strong El Niño;
-#  similarly, values <= -0.5 and values > -1.0 is a weak La Niña,
-#  values <= -1.0 and values > -1.5 a moderate La Niña, and <= -1.5 a strong La Niña
+## ONI value >= 0.5 and <1 is considered a weak El Nino, >=1.0 to <1.5 a moderate El Nino,
+#  >=1.5 and <2 a strong El Nino, and >=2 a very strong El Nino;
+#  similarly, values <= -0.5 and values > -1.0 is a weak La Nina,
+#  values <= -1.0 and values > -1.5 a moderate La Nina, and <= -1.5 a strong La Nina
 
 # Assign ENSO phase colors based on value
 assignENSOColors <- function(data) {
   data <- data %>%
     mutate(Color = case_when(
-      Values >= 0.5 & Values < 1.0 ~ '#F1959B',   # Weak El Niño
-      Values >= 1.0 & Values < 1.5 ~ '#F07470',   # Medium El Niño
-      Values >= 1.5 & Values < 2.0 ~ '#EA4C46',   # Strong El Niño
-      Values >= 2.0 ~ '#DC1C13',                  # Very Strong El Niño
-      Values <= -0.5 & Values > -1.0 ~ '#2A9DF4', # Weak La Niña
-      Values <= -1.0 & Values > -1.5 ~ '#1167B1', # Medium La Niña
-      Values <= -1.5 ~ '#003D80',                 # Strong La Niña
+      Values >= 0.5 & Values < 1.0 ~ '#F1959B',   # Weak El Nino
+      Values >= 1.0 & Values < 1.5 ~ '#F07470',   # Medium El Nino
+      Values >= 1.5 & Values < 2.0 ~ '#EA4C46',   # Strong El Nino
+      Values >= 2.0 ~ '#DC1C13',                  # Very Strong El Nino
+      Values <= -0.5 & Values > -1.0 ~ '#2A9DF4', # Weak La Nina
+      Values <= -1.0 & Values > -1.5 ~ '#1167B1', # Medium La Nina
+      Values <= -1.5 ~ '#003D80',                 # Strong La Nina
       TRUE ~ '#d3d3d3'                            # ENSO Neutral
+    ),
+    ENSO_Type = case_when(
+      Values >= 0.5 & Values < 1.0 ~ 'Weak El Nino',
+      Values >= 1.0 & Values < 1.5 ~ 'Medium El Nino',
+      Values >= 1.5 & Values < 2.0 ~ 'Strong El Nino',
+      Values >= 2.0 ~ 'Very Strong El Nino',
+      Values <= -0.5 & Values > -1.0 ~ 'Weak La Nina',
+      Values <= -1.0 & Values > -1.5 ~ 'Medium La Nina',
+      Values <= -1.5 ~ 'Strong La Nina',
+      TRUE ~ 'ENSO Neutral'
     ))
   return(data)
 }
@@ -126,18 +136,30 @@ timeSeriesPlot <- function(data) {
 plotENSOSeries <- function(data) {
   # Plot using ggplot
   # Color-coded time series barplot with legend
+  legend_labels <- c(
+    '#F1959B' = 'Weak El Niño',
+    '#F07470' = 'Medium El Niño',
+    '#EA4C46' = 'Strong El Niño',
+    '#DC1C13' = 'Very Strong El Niño',
+    '#2A9DF4' = 'Weak La Niña',
+    '#1167B1' = 'Medium La Niña',
+    '#003D80' = 'Strong La Niña',
+    '#d3d3d3' = 'ENSO Neutral'
+  )
+  print("this is printed")
+  print(data$ENSO_Type)
   options(repr.plot.width = 30, repr.plot.height = 200)
   ggplot(data, aes(y = reorder(YrMon, DATE), x = abs(Values), fill = Color)) +
 
     geom_bar(aes(x=abs(Values), y=reorder(YrMon, DATE), fill=Color), stat = "identity", show.legend = TRUE) +
     scale_fill_identity(name = "ENSO Phase", guide = "legend",
-                        labels = c("Strong La Niña", "Medium La Niña", "Weak La Niña", "ENSO Neutral",
-                                   "Very Strong El Niño", "Strong El Niño", "Medium El Niño", "Weak El Niño")) +
+                        labels = legend_labels
+                        ) +
     theme_minimal() +
     labs(
       x = "Monthly Nino 3.4 Region Average",
       y = "Time",
-      title = "Oceanic Niño Index, 2001-2021\nENSO Intensities by Month"
+      title = "Oceanic Nino Index, 2001-2021\nENSO Intensities by Month"
     ) +
     theme(
       axis.text.y = element_text(size = 8),
@@ -183,6 +205,7 @@ enso_main <- function(data, StartDate, EndDate) {
 
   # Assign colors for plotting
   colored_data <- assignENSOColors(plot_data)
+  print(colored_data)
 
   # Plot 2- plot the data- main plot
   p <-  plotENSOSeries(colored_data)
@@ -193,23 +216,23 @@ enso_main <- function(data, StartDate, EndDate) {
 # tester code
 #enso_main(enso_data, "2000-2001",  "2020-2021")
 
-sample_data <- data.frame(
-  Season = c("2000-2001", "2001-2002"),
-  JJA = c(-0.6, -0.1),
-  JAS = c(-0.5, -0.1),
-  ASO = c(-0.5, -0.2),
-  SON = c(-0.6, -0.3),
-  OND = c(-0.7, -0.3),
-  NDJ = c(-0.7, -0.3),
-  DJF = c(-0.7, -0.1),
-  JFM = c(-0.5, 0.0),
-  FMA = c(-0.4, 0.2),
-  MAM = c(-0.3, 0.2),
-  AMJ = c(-0.3, 0.4),
-  MJJ = c(-0.1, 0.7)
-)
-print(sample_data)
-enso_main(sample_data, "2000-2001", "2001-2002")
+# sample_data <- data.frame(
+#   Season = c("2000-2001", "2001-2002"),
+#   JJA = c(-0.6, -0.1),
+#   JAS = c(-0.5, -0.1),
+#   ASO = c(-0.5, -0.2),
+#   SON = c(-0.6, -0.3),
+#   OND = c(-0.7, -0.3),
+#   NDJ = c(-0.7, -0.3),
+#   DJF = c(-0.7, -0.1),
+#   JFM = c(-0.5, 0.0),
+#   FMA = c(-0.4, 0.2),
+#   MAM = c(-0.3, 0.2),
+#   AMJ = c(-0.3, 0.4),
+#   MJJ = c(-0.1, 0.7)
+# )
+# print(sample_data)
+# enso_main(sample_data, "2000-2001", "2001-2002")
 
 
 
@@ -268,13 +291,13 @@ enso_main(sample_data, "2000-2001", "2001-2002")
 # assignENSOColors <- function(data) {
 #   data <- data %>%
 #     mutate(Color = case_when(
-#       Values >= 0.5 & Values < 1.0 ~ '#F1959B',   # Weak El Niño
-#       Values >= 1.0 & Values < 1.5 ~ '#F07470',   # Medium El Niño
-#       Values >= 1.5 & Values < 2.0 ~ '#EA4C46',   # Strong El Niño
-#       Values >= 2.0 ~ '#DC1C13',                  # Very Strong El Niño
-#       Values <= -0.5 & Values > -1.0 ~ '#2A9DF4', # Weak La Niña
-#       Values <= -1.0 & Values > -1.5 ~ '#1167B1', # Medium La Niña
-#       Values <= -1.5 ~ '#003D80',                 # Strong La Niña
+#       Values >= 0.5 & Values < 1.0 ~ '#F1959B',   # Weak El Nino
+#       Values >= 1.0 & Values < 1.5 ~ '#F07470',   # Medium El Nino
+#       Values >= 1.5 & Values < 2.0 ~ '#EA4C46',   # Strong El Nino
+#       Values >= 2.0 ~ '#DC1C13',                  # Very Strong El Nino
+#       Values <= -0.5 & Values > -1.0 ~ '#2A9DF4', # Weak La Nina
+#       Values <= -1.0 & Values > -1.5 ~ '#1167B1', # Medium La Nina
+#       Values <= -1.5 ~ '#003D80',                 # Strong La Nina
 #       TRUE ~ '#d3d3d3'                            # ENSO Neutral
 #     ))
 #   return(data)
@@ -297,20 +320,20 @@ enso_main(sample_data, "2000-2001", "2001-2002")
 #     labs(
 #       x = "Monthly Nino 3.4 Region Average",
 #       y = "Time",
-#       title = "Oceanic Niño Index, 2001-2021\nENSO Intensities by Month"
+#       title = "Oceanic Nino Index, 2001-2021\nENSO Intensities by Month"
 #     ) +
 #     coord_flip() +
 #     theme(panel.grid.minor = element_blank())
 #
 #   # Add legend
 #   legend_labels <- c(
-#     'Weak El Niño' = '#F1959B',
-#     'Medium El Niño' = '#F07470',
-#     'Strong El Niño' = '#EA4C46',
-#     'Very Strong El Niño' = '#DC1C13',
-#     'Weak La Niña' = '#2A9DF4',
-#     'Medium La Niña' = '#1167B1',
-#     'Strong La Niña' = '#003D80',
+#     'Weak El Nino' = '#F1959B',
+#     'Medium El Nino' = '#F07470',
+#     'Strong El Nino' = '#EA4C46',
+#     'Very Strong El Nino' = '#DC1C13',
+#     'Weak La Nina' = '#2A9DF4',
+#     'Medium La Nina' = '#1167B1',
+#     'Strong La Nina' = '#003D80',
 #     'ENSO Neutral' = '#d3d3d3'
 #   )
 #
