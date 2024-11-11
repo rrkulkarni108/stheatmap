@@ -177,9 +177,11 @@ enso_main <- function(data, StartDate, EndDate) {
   if("EnsoType" %in% colnames(enso)){
     enso_subset <- enso %>% select(-c(EnsoType, Season))
   }
+
+  #remove season column so we can get array of just ONI values
   enso_subset <- enso %>% select(-c(Season))
-  enso_arr <- as.vector(t(enso_subset))
-  val_arr <- rollingAvg(enso_arr)
+  enso_arr <- as.vector(t(enso_subset)) #create array of ONI values
+  val_arr <- rollingAvg(enso_arr) #get individual ONI average for each month
 
   # Extract years labels from Season column
   yrs <- c()
@@ -189,24 +191,20 @@ enso_main <- function(data, StartDate, EndDate) {
   }
   yrs <- yrs[1:length(val_arr)]
 
-  # create dataframe to be used for plotting
+  # Create dataframe to be used for plotting
   # Create data frame
   months <- rep(1:12, length.out = length(val_arr))
   plot_data <- data.frame(Year = yrs, Month = months, Values = val_arr)
   plot_data <- plot_data %>% mutate(DATE = make_date(Year, Month, 1), YrMon = format(DATE, "%Y-%m"))
 
-
   #Plot 1 - overall time series to get general picture
   q <- timeSeriesPlot(plot_data)
-  q
 
   # Assign colors for plotting
   colored_data <- assignENSOColors(plot_data)
-  #print(colored_data)
 
   # Plot 2- plot the data- main plot
   p <-  plotENSOSeries(colored_data)
-  p
   return(list(q,p))
 }
 
