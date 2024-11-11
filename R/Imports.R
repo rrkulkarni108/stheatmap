@@ -7,5 +7,6 @@
 #' @import lubridate
 #' @import ggplot2
 #' @importFrom stats hclust
+#' @importFrom stats reorder
 #' @import cluster
 NULL
