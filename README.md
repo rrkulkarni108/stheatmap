@@ -18,7 +18,7 @@ I will then also apply this function on a large dataset which involves drought (
 * There are bugs in the heatmap code so I need to complete the functions and fix the errors
 * need to ensure R style is correct across all files
 * fix warnings
-* make vignette on my sample dataset if time permits, or make faster my functions using C++
+* make vignette on my sample dataset if time permits, or make my functions faster using C++
 * add more plotting using shp files if time permits
 
 
