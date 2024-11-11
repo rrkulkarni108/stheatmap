@@ -13,9 +13,18 @@
 #' # Load the data
 #' sample_data <- data.frame(
 #' Season = c("2000-2001", "2001-2002"),
-#' JJA = c(1.2, 0.5),
-#' JAS = c(0.3, -0.4),
-#' ASO = c(-0.5, -0.7)
+#' JJA = c(-0.6, -0.1),
+#' JAS = c(-0.5, -0.1),
+#' ASO = c(-0.5, -0.2),
+#' SON = c(-0.6, -0.3),
+#' OND = c(-0.7, -0.3),
+#' NDJ = c(-0.7, -0.3),
+#' DJF = c(-0.7, -0.1),
+#' JFM = c(-0.5, 0.0),
+#' FMA = c(-0.4, 0.2),
+#' MAM = c(-0.3, 0.2),
+#' AMJ = c(-0.3, 0.4),
+#' MJJ = c(-0.1, 0.7)
 #' )
 #' print(sample_data)
 #' enso_main(sample_data, "2000-2001", "2001-2002")
@@ -185,10 +194,19 @@ enso_main <- function(data, StartDate, EndDate) {
 #enso_main(enso_data, "2000-2001",  "2020-2021")
 
 sample_data <- data.frame(
-Season = c("2000-2001", "2001-2002"),
-JJA = c(1.2, 0.5),
-JAS = c(0.3, -0.4),
-ASO = c(-0.5, -0.7)
+  Season = c("2000-2001", "2001-2002"),
+  JJA = c(-0.6, -0.1),
+  JAS = c(-0.5, -0.1),
+  ASO = c(-0.5, -0.2),
+  SON = c(-0.6, -0.3),
+  OND = c(-0.7, -0.3),
+  NDJ = c(-0.7, -0.3),
+  DJF = c(-0.7, -0.1),
+  JFM = c(-0.5, 0.0),
+  FMA = c(-0.4, 0.2),
+  MAM = c(-0.3, 0.2),
+  AMJ = c(-0.3, 0.4),
+  MJJ = c(-0.1, 0.7)
 )
 print(sample_data)
 enso_main(sample_data, "2000-2001", "2001-2002")
