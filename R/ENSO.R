@@ -205,7 +205,7 @@ enso_main <- function(data, StartDate, EndDate) {
 
   # Assign colors for plotting
   colored_data <- assignENSOColors(plot_data)
-  print(colored_data)
+  #print(colored_data)
 
   # Plot 2- plot the data- main plot
   p <-  plotENSOSeries(colored_data)
@@ -214,7 +214,8 @@ enso_main <- function(data, StartDate, EndDate) {
 }
 
 # tester code
-#enso_main(enso_data, "2000-2001",  "2020-2021")
+enso_data = enso_data[,2:11]
+enso_main(enso_data, "2000-2001",  "2020-2021")
 
 # sample_data <- data.frame(
 #   Season = c("2000-2001", "2001-2002"),
