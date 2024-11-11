@@ -19,6 +19,12 @@ Functions that create a ENSO Time Series Plot of ONI values
 \examples{
 # Give example
 # Load the data
-enso_data <- read_excel("Data/ENSO.xlsx")
-enso_main(enso_data, "2000-2001",  "2020-2021")
+sample_data <- data.frame(
+Season = c("2000-2001", "2001-2002"),
+JJA = c(1.2, 0.5),
+JAS = c(0.3, -0.4),
+ASO = c(-0.5, -0.7)
+)
+print(sample_data)
+enso_main(sample_data, "2000-2001", "2001-2002")
 }
