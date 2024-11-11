@@ -97,46 +97,33 @@ timeSeriesPlot <- function(data) {
 
 
 ## PLOT 2: MAIN PLOT
-plotENSOIndex <- function(data) {
+# Plotting function
+plotENSOSeries <- function(data) {
   # Plot using ggplot
-  p <- ggplot(data, aes(x = abs(Values), y = YrMon, fill = Color)) +
-    geom_bar(stat = "identity", color = "black") +
-    scale_fill_identity() +
+  # Color-coded time series barplot with legend
+  options(repr.plot.width = 30, repr.plot.height = 200)
+  ggplot(data, aes(y = reorder(YrMon, DATE), x = abs(Values), fill = Color)) +
+
+    geom_bar(aes(x=abs(Values), y=reorder(YrMon, DATE), fill=Color), stat = "identity", show.legend = TRUE) +
+    scale_fill_identity(name = "ENSO Phase", guide = "legend",
+                        labels = c("Strong La Niña", "Medium La Niña", "Weak La Niña", "ENSO Neutral",
+                                   "Very Strong El Niño", "Strong El Niño", "Medium El Niño", "Weak El Niño")) +
     theme_minimal() +
-    theme(
-      axis.text.y = element_text(size = 10),
-      axis.title.y = element_text(size = 15),
-      axis.title.x = element_text(size = 15),
-      plot.title = element_text(size = 20, hjust = 0.5)
-    ) +
     labs(
       x = "Monthly Nino 3.4 Region Average",
       y = "Time",
       title = "Oceanic Niño Index, 2001-2021\nENSO Intensities by Month"
     ) +
-    coord_flip() +
-    theme(panel.grid.minor = element_blank())
-
-  # Add legend
-  legend_labels <- c(
-    'Weak El Niño' = '#F1959B',
-    'Medium El Niño' = '#F07470',
-    'Strong El Niño' = '#EA4C46',
-    'Very Strong El Niño' = '#DC1C13',
-    'Weak La Niña' = '#2A9DF4',
-    'Medium La Niña' = '#1167B1',
-    'Strong La Niña' = '#003D80',
-    'ENSO Neutral' = '#d3d3d3'
-  )
-
-  p <- p + scale_fill_manual(
-    values = legend_labels,
-    breaks = names(legend_labels),
-    name = "ENSO Phase"
-  )
-
-  print(p)
+    theme(
+      axis.text.y = element_text(size = 8),
+      axis.title.x = element_text(size = 10),
+      axis.title.y = element_text(size = 10),
+      plot.title = element_text(size = 20, hjust = 0.5),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.y = element_blank()
+    )+  scale_y_discrete(limits = rev(unique(data$YrMon)),breaks = function(y) y[seq(1, length(y), by = 6)])#scale_y_discrete(limits = rev(unique(data$YrMon)), breaks = function(y) y[seq(1, length(y), by = 12)])# scale_y_discrete(breaks = function(y) y[seq(1, length(y), by = 12)])
 }
+
 
 # Main function which calls the subfunctions
 enso_main <- function(data) {
