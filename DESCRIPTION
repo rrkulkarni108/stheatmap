@@ -10,5 +10,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     cluster,
+    dplyr,
     ggplot2,
-    stats
+    lubridate,
+    readxl,
+    stats,
+    tidyr
