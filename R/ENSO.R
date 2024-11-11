@@ -133,13 +133,13 @@ plotENSOSeries <- function(data) {
   # Plot using ggplot
   # Color-coded time series barplot with legend
   legend_labels <- c(
-    '#F1959B' = 'Weak El Niño',
-    '#F07470' = 'Medium El Niño',
-    '#EA4C46' = 'Strong El Niño',
-    '#DC1C13' = 'Very Strong El Niño',
-    '#2A9DF4' = 'Weak La Niña',
-    '#1167B1' = 'Medium La Niña',
-    '#003D80' = 'Strong La Niña',
+    '#F1959B' = 'Weak El Nino',
+    '#F07470' = 'Medium El Nino',
+    '#EA4C46' = 'Strong El Nino',
+    '#DC1C13' = 'Very Strong El Nino',
+    '#2A9DF4' = 'Weak La Nina',
+    '#1167B1' = 'Medium La Nina',
+    '#003D80' = 'Strong La Nina',
     '#d3d3d3' = 'ENSO Neutral'
   )
   #print("this is printed")
