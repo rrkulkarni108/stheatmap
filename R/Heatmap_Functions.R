@@ -1,10 +1,8 @@
 #' Functions that visualize spatiotemporal data using heatmaps
 #'
 #' @param X n by p matrix containing n data points to cluster.
-#' @param K An integer specifying number of clusters.
-#' @param M K by p matrix of cluster centers.
 #'
-#' @return Explain return
+#' @return a data matrix with correct format
 #' @export
 #'
 #' @examples
@@ -21,7 +19,14 @@
 # y - a vector of size n of class labels
 # OUTPUT
 
+#X <- readxl::read_excel("Data/Drought.xlsx")
+
+
+
+## Add a function that subsets the data to take only relevant columns
+## and reshape format
 SubsetData <- function(X){
+
 }
 
 
@@ -30,6 +35,19 @@ SubsetData <- function(X){
 ##########################################################################
 
 
+
+
+#' Functions that visualize spatiotemporal data using heatmaps
+#'
+#' @param X n by p matrix containing n data points to cluster.
+#' @param K An integer specifying number of clusters.
+#' @param M K by p matrix of cluster centers.
+#'
+#' @return Explain return
+#' @export
+#'
+#' @examples
+#' # Give example
 
 
 # Function that assigns clusters and reformats to be appropriate input for other functions
@@ -39,7 +57,10 @@ SubsetData <- function(X){
 # y - a vector of size n of class labels
 # OUTPUT
 
-AssignClusters <- function(X){
+
+## Use hierarchical clustering with Euclidean metric to determine clusters
+# there are supposed to be 6 clusters for 6 drought severity types
+AssignClusters <- function(X, K, M = NULL){
 
 
 }
@@ -50,12 +71,22 @@ AssignClusters <- function(X){
 ##########################################################################
 
 
+
 # Function that creates heatmap from the data using other helper functions
 ###############################################################################################
 # Description of supplied parameters:
 # X - n x p training data
 # y - a vector of size n of class labels
 # OUTPUT
+
+#'
+#' @param X n by p matrix containing n data points to cluster. #change this
+#'
+#' @return a dataframe ready to be plotted
+#' @export
+#'
+#' @examples
+#' # Give example
 
 CreateHeatmap <- function(X){
 
