@@ -8,13 +8,9 @@ SubsetData(X)
 }
 \arguments{
 \item{X}{n by p matrix containing n data points to cluster.}
-
-\item{K}{An integer specifying number of clusters.}
-
-\item{M}{K by p matrix of cluster centers.}
 }
 \value{
-Explain return
+a data matrix with correct format
 }
 \description{
 Functions that visualize spatiotemporal data using heatmaps
