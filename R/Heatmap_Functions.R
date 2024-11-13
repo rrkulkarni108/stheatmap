@@ -19,14 +19,28 @@
 # y - a vector of size n of class labels
 # OUTPUT
 
-#X <- readxl::read_excel("Data/Drought.xlsx")
+X <- readxl::read_excel("Data/Drought.xlsx")
 
 
 
 ## Add a function that subsets the data to take only relevant columns
 ## and reshape format
-SubsetData <- function(X){
+SubsetData <- function(X) {
+  SubsetData <- function(X) {
+    library(reshape2)
 
+    # select relevant columns
+    X_subset <- X[, c("MapDate", "County", "State", "None", "D0", "D1", "D2", "D3", "D4")]
+
+    # reshape data to long format from wide format
+    X_melt <- melt(X_subset, id.vars = c("MapDate", "County", "State"),
+                   variable.name = "Drought_Level", value.name = "Percentage")
+
+    # change the type from MapDate to Date type
+    X_melt$MapDate <- as.Date(as.character(X_melt$MapDate), format = "%Y%m%d")
+
+    return(X_melt)
+  }
 }
 
 
@@ -60,8 +74,7 @@ SubsetData <- function(X){
 
 ## Use hierarchical clustering with Euclidean metric to determine clusters
 # there are supposed to be 6 clusters for 6 drought severity types
-AssignClusters <- function(X, K, M = NULL){
-
+AssignClusters <- function(X, K, M = NULL) {
 
 }
 
@@ -88,8 +101,7 @@ AssignClusters <- function(X, K, M = NULL){
 #' @examples
 #' # Give example
 
-CreateHeatmap <- function(X){
-
+CreateHeatmap <- function(X) {
 
 }
 
@@ -107,8 +119,7 @@ CreateHeatmap <- function(X){
 # y - a vector of size n of class labels
 # OUTPUT
 
-PlotHeat <- function(X){
-
+PlotHeat <- function(X) {
 
 }
 
