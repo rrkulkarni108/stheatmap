@@ -95,6 +95,13 @@ AssignClusters <- function(X, K = 6, M = NULL) {
   # Reshape data to wide format
   X_wide = dcast(X_avg, County ~ Drought_Level, value.var = "Avg_Percentage")
 
+  # Name data with counties
+  rownames(X_wide) <- X_wide$County
+
+  # Extract data for clustering algorithm
+  X_data <- X_wide[, c("None", "D0", "D1", "D2", "D3", "D4")]
+  X_data <- as.matrix(X_data)
+
 
 }
 
