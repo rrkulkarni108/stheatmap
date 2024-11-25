@@ -4,7 +4,7 @@
 \alias{AssignClusters}
 \title{Functions that visualize spatiotemporal data using heatmaps}
 \usage{
-AssignClusters(X, K, M = NULL)
+AssignClusters(X, K = 6, M = NULL)
 }
 \arguments{
 \item{X}{n by p matrix containing n data points to cluster.}
