@@ -26,21 +26,19 @@ X <- readxl::read_excel("Data/Drought.xlsx")
 ## Add a function that subsets the data to take only relevant columns
 ## and reshape format
 SubsetData <- function(X) {
-  SubsetData <- function(X) {
-    library(reshape2)
+  library(reshape2)
 
-    # select relevant columns
-    X_subset <- X[, c("MapDate", "County", "State", "None", "D0", "D1", "D2", "D3", "D4")]
+  # select relevant columns
+  X_subset <- X[, c("MapDate", "County", "None", "D0", "D1", "D2", "D3", "D4")]
 
-    # reshape data to long format from wide format
-    X_melt <- melt(X_subset, id.vars = c("MapDate", "County", "State"),
-                   variable.name = "Drought_Level", value.name = "Percentage")
+  # reshape data to long format from wide format
+  X_melt <- melt(X_subset, id.vars = c("MapDate", "County"),
+                 variable.name = "Drought_Level", value.name = "Percentage")
 
-    # change the type from MapDate to Date type
-    X_melt$MapDate <- as.Date(as.character(X_melt$MapDate), format = "%Y%m%d")
+  # change the type from MapDate to Date type
+  X_melt$MapDate <- as.Date(as.character(X_melt$MapDate), format = "%Y%m%d")
 
-    return(X_melt)
-  }
+  return(X_melt)
 }
 
 
