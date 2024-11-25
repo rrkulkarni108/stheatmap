@@ -85,7 +85,16 @@ SubsetData <- function(X) {
 
 ## Use hierarchical clustering with Euclidean metric to determine clusters
 # there are supposed to be 6 clusters for 6 drought severity types
-AssignClusters <- function(X, K, M = NULL) {
+AssignClusters <- function(X, K = 6, M = NULL) {
+  # Compute average percentages over time for each county
+  X_avg <- X %>%
+    group_by(County, Drought_Level) %>%
+    summarise(Avg_Percentage = mean(Percentage, na.rm = TRUE)) %>%
+    ungroup()
+
+  # Reshape data to wide format
+  X_wide = dcast(X_avg, County ~ Drought_Level, value.var = "Avg_Percentage")
+
 
 }
 
