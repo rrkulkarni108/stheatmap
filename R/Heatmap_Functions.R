@@ -15,11 +15,24 @@
 # Function that subsets the data and reformats to be appropriate input for other functions
 ###############################################################################################
 # Description of supplied parameters:
-# X - n x p training data
+# X - n x p training data, input format is .Rda file
 # y - a vector of size n of class labels
 # OUTPUT
 
-X <- readxl::read_excel("Data/Drought.xlsx")
+#convert csv to Rda file
+#X <- read.csv("Data/Drought.csv")
+
+# Save the data as an Rda file
+#save(X, file = "Drought.Rda")
+
+#check that it works
+#load("Drought.Rda")
+#print(X[1:10])
+
+#load in the dataset
+load("Data/Drought.Rda")
+#ls()
+X <- X #name of data variable is X
 
 
 
