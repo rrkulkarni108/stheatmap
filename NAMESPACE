@@ -2,7 +2,6 @@
 
 export(AssignClusters)
 export(CreateHeatmap)
-export(SubsetData)
 export(enso_main)
 import(cluster)
 import(dplyr)

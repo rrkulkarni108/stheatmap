@@ -34,4 +34,7 @@ Imports:
     lubridate,
     readxl,
     stats,
-    tidyr
+    tidyr, 
+    reshape2, 
+    dendextend,
+    pheatmap
