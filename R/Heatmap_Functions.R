@@ -29,11 +29,6 @@
 #load("Drought.Rda")
 #print(X[1:10])
 
-#load in the dataset
-load("Data/Drought.Rda")
-#ls()
-X <- X #name of data variable is X
-
 
 
 ## Add a function that subsets the data to take only relevant columns
@@ -102,6 +97,15 @@ AssignClusters <- function(X, K = 6, M = NULL) {
   X_data <- X_wide[, c("None", "D0", "D1", "D2", "D3", "D4")]
   X_data <- as.matrix(X_data)
 
+  # Compute the distance matrix
+  dist_mat <- dist(X_data, method = "euclidean")
+
+  # Hierarchical clustering
+  hc <- hclust(dist_mat, method = "average")
+
+  # Cut our dendrogram into K clusters
+  clusters <- cutree(hc, k = K)
+
 
 }
 
@@ -154,3 +158,9 @@ PlotHeat <- function(X) {
 
 ## Return output
 ##########################################################################
+
+
+#load in the dataset
+load("Data/Drought.Rda")
+#ls()
+X <- X #name of data variable is X
