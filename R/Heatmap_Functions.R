@@ -184,14 +184,13 @@ PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
   # Plot the heatmap
   X$County <- str_remove(X$County, " County") #remove the word county since it takes a lot of space in X label
   #reorder weeks from least to greatest
-  X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
-  library(stringr)
-  X$Week <- str_wrap(X$Week, width = 5)
+  X$Week <- as.integer(factor(X$Week, levels = rev(sort(unique(X$Week)))))#X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
+  print(X$Week)
   heatmap_plot <- ggplot(data = X, aes(x = County, y = Week, fill = Cluster)) +
     geom_tile() +
     scale_fill_manual(
       values = palette,
-      name = "Severity"
+      name = "Drought Severity"
     ) +
     theme_minimal() +
     theme(
