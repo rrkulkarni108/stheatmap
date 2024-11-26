@@ -115,6 +115,7 @@ AssignClusters <- function(X, K = 6, M = NULL) {
     summarise_at(vars("None", "D0", "D1", "D2", "D3", "D4"), mean, na.rm = TRUE)
 
   # Determine Drought_Level labels for clusters
+  # A new column Drought_Level is added to cluster_summary, indicating the dominant drought level for each cluster.
   cluster_summary$Drought_Level <- apply(cluster_summary[, c("None", "D0", "D1", "D2", "D3", "D4")], 1, function(x) {
     names(x)[which.max(x)]
   })
@@ -125,8 +126,6 @@ AssignClusters <- function(X, K = 6, M = NULL) {
   return(list(X_wide = X_wide, hc = hc, cluster_summary = cluster_summary))
 
 }
-
-
 
 ## Return output
 ##########################################################################
@@ -178,6 +177,72 @@ PlotHeat <- function(X) {
 
 
 
+
+
+
+
+
+
+AssignClustersByWeek <- function(X, K = 6) {
+  # Compute average percentages over time for each week in each county
+  #Week <- X$MapDate
+  X_avg <- X %>%
+    group_by(County, MapDate, Drought_Level) %>%
+    summarise(Avg_Percentage = mean(Percentage, na.rm = TRUE)) %>%
+    ungroup()
+
+  # Reshape data to wide format
+  X_wide = dcast(X_avg, County + MapDate ~ Drought_Level, value.var = "Avg_Percentage")
+
+  # Extract relevant columns for clustering
+  X_data <- X_wide[, c("None", "D0", "D1", "D2", "D3", "D4")]
+  X_data <- as.matrix(X_data)
+
+  # Compute the distance matrix
+  dist_mat <- dist(X_data, method = "euclidean")
+
+  # Perform hierarchical clustering
+  hc <- hclust(dist_mat, method = "average")
+
+  # Cut the dendrogram into K clusters
+  clusters <- cutree(hc, k = K)
+
+  # Assign clusters to the wide-format data
+  X_wide$Cluster <- clusters
+
+  # Compute cluster summaries
+  cluster_summary <- X_wide %>%
+    group_by(Cluster) %>%
+    summarise_at(vars("None", "D0", "D1", "D2", "D3", "D4"), mean, na.rm = TRUE)
+
+  # Determine dominant drought levels for clusters
+  cluster_summary$Drought_Level <- apply(cluster_summary[, c("None", "D0", "D1", "D2", "D3", "D4")], 1, function(x) {
+    names(x)[which.max(x)]
+  })
+
+  # Merge cluster labels back into the data
+  X_wide <- merge(X_wide, cluster_summary[, c("Cluster", "Drought_Level")], by = "Cluster")
+
+  # Assign cluster categories for each week in each county
+  X_with_clusters <- X %>%
+    left_join(X_wide[, c("County", "MapDate", "Cluster", "Drought_Level")], by = c("County", "MapDate"))
+
+  return(list(X_with_clusters = X_with_clusters, hc = hc, cluster_summary = cluster_summary))
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Test code with dataset
 #load in the dataset
 load("Data/Drought.Rda")
@@ -185,3 +250,4 @@ load("Data/Drought.Rda")
 X <- X #name of data variable is X
 X_melt <- SubsetData(X)
 cluster_results <- AssignClusters(X_melt, K= 6)
+AssignClustersByWeek(X_melt, K = 6)
