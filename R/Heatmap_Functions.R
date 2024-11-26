@@ -176,6 +176,7 @@ CreateHeatmap <- function(X) {
 
 PlotHeat <- function(X) {
   # Plot the heatmap
+  X$County <- str_remove(X$County, " County") #remove the word county since it takes a lot of space in X label
   #reorder weeks from least to greatest
   X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
   library(stringr)
@@ -184,12 +185,12 @@ PlotHeat <- function(X) {
     geom_tile() +
     scale_fill_manual(
       values = c(
-        "1" = "green",
-        "2" = "yellowgreen",
+        "1" = "#008000",#"#006837",
+        "2" = "#66BD63",
         "3" = "yellow",
         "4" = "orange",
-        "5" = "red",
-        "6" = "darkred"
+        "5" =  "red",#D73027",
+        "6" =  "darkred" #"#A50026"
       ),
       name = "Severity"
     ) +
@@ -200,7 +201,7 @@ PlotHeat <- function(X) {
       axis.title.y = element_text(size = 12, face = "bold"),
       legend.title = element_text(size = 12, face = "bold"),
       axis.text.y = element_text(size = 8),  # set font size
-      plot.margin = margin(10, 10, 10, 20)  # make left margin bigger to fit  y-axis labels
+      #plot.margin = margin(10, 10, 10, 20)  # make left margin bigger to fit  y-axis labels
     ) +
     labs(
       title = "Heatmap of County-Level Drought Severity",
