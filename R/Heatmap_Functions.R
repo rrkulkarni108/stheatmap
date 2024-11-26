@@ -174,7 +174,13 @@ CreateHeatmap <- function(X) {
 # y - a vector of size n of class labels
 # OUTPUT
 
-PlotHeat <- function(X) {
+PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
+                                    "2" = "#66BD63", #D0 severity
+                                    "3" = "yellow", #D1 severity
+                                    "4" = "orange", #D2 severity
+                                    "5" =  "red", #D3 severity
+                                    "6" =  "darkred" #D4 severity
+                                    )) {
   # Plot the heatmap
   X$County <- str_remove(X$County, " County") #remove the word county since it takes a lot of space in X label
   #reorder weeks from least to greatest
@@ -184,14 +190,7 @@ PlotHeat <- function(X) {
   heatmap_plot <- ggplot(data = X, aes(x = County, y = Week, fill = Cluster)) +
     geom_tile() +
     scale_fill_manual(
-      values = c(
-        "1" = "#008000",#"#006837",
-        "2" = "#66BD63",
-        "3" = "yellow",
-        "4" = "orange",
-        "5" =  "red",#D73027",
-        "6" =  "darkred" #"#A50026"
-      ),
+      values = palette,
       name = "Severity"
     ) +
     theme_minimal() +
