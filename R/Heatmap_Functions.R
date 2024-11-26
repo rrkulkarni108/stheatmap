@@ -149,7 +149,15 @@ AssignClusters <- function(X, K = 6, M = NULL) {
 #' # Give example
 
 CreateHeatmap <- function(X) {
+  # Subset the data to relevant columns and reshape to long format
+  X_melt <- X %>%
+    select(MapDate, County, Cluster) %>%
+    mutate(Week = as.numeric(MapDate)) # Add a numeric week column for plotting
 
+  # Convert the Cluster column into a factor for consistent coloring
+  X_melt$Cluster <- as.factor(X_melt$Cluster)
+
+  return(X_melt)
 }
 
 
@@ -241,8 +249,6 @@ AssignClustersByWeek <- function(X, K = 6) {
 
 
 
-
-
 #Test code with dataset
 #load in the dataset
 load("Data/Drought.Rda")
@@ -250,4 +256,44 @@ load("Data/Drought.Rda")
 X <- X #name of data variable is X
 X_melt <- SubsetData(X)
 cluster_results <- AssignClusters(X_melt, K= 6)
-AssignClustersByWeek(X_melt, K = 6)
+by_week <- AssignClustersByWeek(X_melt, K = 6)
+X_with_clusters <- by_week$X_with_clusters
+heatmap_data <- CreateHeatmap(X_with_clusters)
+
+
+# vals <- county_severities(X_melt, K = 6, pretty_print = TRUE)
+# vals
+#
+#
+# county_severities(by_week, K = 6, pretty_print = TRUE)
+#
+
+
+
+
+
+
+
+
+
+
+
+
+# # Group by Cluster to summarize counties and dominant drought severity
+# counties_by_cluster <- X_with_clusters %>%
+#   group_by(Cluster) %>%
+#   summarise(
+#     Severity = first(Drought_Level.y),  # Dominant drought level for the cluster
+#     Counties = paste(unique(County), collapse = ", ")  # List unique counties in the cluster
+#   )
+#
+# # Print the results
+# print(counties_by_cluster)
+#
+# # Pretty-print the results for better readability
+# for (i in seq_len(nrow(counties_by_cluster))) {
+#   cat(paste("Cluster", counties_by_cluster$Cluster[i],
+#             "(Severity:", counties_by_cluster$Severity[i], "):\n"))
+#   cat(counties_by_cluster$Counties[i], "\n\n")
+# }
+
