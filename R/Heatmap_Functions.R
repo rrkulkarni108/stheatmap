@@ -175,7 +175,40 @@ CreateHeatmap <- function(X) {
 # OUTPUT
 
 PlotHeat <- function(X) {
+  # Plot the heatmap
+  #reorder weeks from least to greatest
+  X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
+  library(stringr)
+  X$Week <- str_wrap(X$Week, width = 5)
+  heatmap_plot <- ggplot(data = X, aes(x = County, y = Week, fill = Cluster)) +
+    geom_tile() +
+    scale_fill_manual(
+      values = c(
+        "1" = "green",
+        "2" = "yellowgreen",
+        "3" = "yellow",
+        "4" = "orange",
+        "5" = "red",
+        "6" = "darkred"
+      ),
+      name = "Severity"
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1),
+      axis.title.x = element_text(size = 12, face = "bold"),
+      axis.title.y = element_text(size = 12, face = "bold"),
+      legend.title = element_text(size = 12, face = "bold"),
+      axis.text.y = element_text(size = 8),  # set font size
+      plot.margin = margin(10, 10, 10, 20)  # make left margin bigger to fit  y-axis labels
+    ) +
+    labs(
+      title = "Heatmap of County-Level Drought Severity",
+      x = "County",
+      y = "Week"
+    )
 
+  print(heatmap_plot)
 }
 
 
@@ -288,7 +321,7 @@ cluster_results <- AssignClusters(X_melt, K= 6)
 by_week <- AssignClustersByWeek(X_melt, K = 6)
 X_with_clusters <- by_week$X_with_clusters
 heatmap_data <- CreateHeatmap(X_with_clusters)
-
+PlotHeat(heatmap_data)
 
 # vals <- county_severities(X_melt, K = 6, pretty_print = TRUE)
 # vals
