@@ -34,13 +34,13 @@
 ## Add a function that subsets the data to take only relevant columns
 ## and reshape format
 SubsetData <- function(X) {
-  library(reshape2)
+  #library(reshape2)
 
   # select relevant columns
   X_subset <- X[, c("MapDate", "County", "None", "D0", "D1", "D2", "D3", "D4")]
 
   # reshape data to long format from wide format
-  X_melt <- melt(X_subset, id.vars = c("MapDate", "County"),
+  X_melt <- reshape2::melt(X_subset, id.vars = c("MapDate", "County"),
                  variable.name = "Drought_Level", value.name = "Percentage")
 
   # change the type from MapDate to Date type
@@ -88,7 +88,7 @@ AssignClusters <- function(X, K = 6, M = NULL) {
     ungroup()
 
   # Reshape data to wide format
-  X_wide = dcast(X_avg, County ~ Drought_Level, value.var = "Avg_Percentage")
+  X_wide = reshape2::dcast(X_avg, County ~ Drought_Level, value.var = "Avg_Percentage")
 
   # Name data with counties
   rownames(X_wide) <- X_wide$County
@@ -232,7 +232,7 @@ AssignClustersByWeek <- function(X, K = 6) {
     ungroup()
 
   # Reshape data to wide format
-  X_wide = dcast(X_avg, County + MapDate ~ Drought_Level, value.var = "Avg_Percentage")
+  X_wide = reshape2::dcast(X_avg, County + MapDate ~ Drought_Level, value.var = "Avg_Percentage")
 
   # Extract relevant columns for clustering
   X_data <- X_wide[, c("None", "D0", "D1", "D2", "D3", "D4")]
@@ -316,7 +316,7 @@ load("Data/Drought.Rda")
 #ls()
 X <- X #name of data variable is X
 X_melt <- SubsetData(X)
-cluster_results <- AssignClusters(X_melt, K= 6)
+#cluster_results <- AssignClusters(X_melt, K= 6)
 by_week <- AssignClustersByWeek(X_melt, K = 6)
 X_with_clusters <- by_week$X_with_clusters
 heatmap_data <- CreateHeatmap(X_with_clusters)
