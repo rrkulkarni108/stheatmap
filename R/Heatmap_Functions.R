@@ -106,6 +106,17 @@ AssignClusters <- function(X, K = 6, M = NULL) {
   # Cut our dendrogram into K clusters
   clusters <- cutree(hc, k = K)
 
+  # Assign clusters to X_wide
+  X_wide$Cluster <- clusters
+
+  # Compute cluster summaries
+  cluster_summary <- X_wide %>%
+    group_by(Cluster) %>%
+    summarise_at(vars("None", "D0", "D1", "D2", "D3", "D4"), mean, na.rm = TRUE)
+
+
+
+
 
 }
 
@@ -160,7 +171,11 @@ PlotHeat <- function(X) {
 ##########################################################################
 
 
+
+#Test code with dataset
 #load in the dataset
 load("Data/Drought.Rda")
 #ls()
 X <- X #name of data variable is X
+X_melt <- SubsetData(X)
+cluster_results <- AssignClusters(X_melt, K= 6)
