@@ -30,10 +30,10 @@
 #' enso_main(sample_data, "2000-2001", "2001-2002")
 
 
-library(dplyr)
-library(lubridate)
-library(readxl)
-library(ggplot2)
+#library(dplyr)
+#library(lubridate)
+#library(readxl)
+#library(ggplot2)
 
 
 ## Function takes in dataframe from any timepoint of this website (it is updated frequently) https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
@@ -237,12 +237,24 @@ enso_main <- function(data, StartDate, EndDate) {
   return(list(q, p))
 }
 
+
+###############################################################################
+
 # tester code
 # Load the data
-#enso_data <- readxl::read_excel("Data/ENSO.xlsx")
-#enso_data = enso_data[,2:11]
-#enso_main(enso_data, "2000-2001",  "2020-2021")
 
+load("Data/ENSO.Rda")
+ls()
+enso_data <- enso_data #name of data variable is enso_data
+
+
+#Example 1: ENSO from 2001-2021
+#enso_data <- readxl::read_excel("Data/ENSO.xlsx")
+#enso_data = enso_data[,2:11] #do not need first column
+enso_main(enso_data, "2000-2001",  "2020-2021")
+
+
+#Example 2: Sample data with only two years
 sample_data <- data.frame(
   Season = c("2000-2001", "2001-2002"),
   JJA = c(-0.6, -0.1),
@@ -258,11 +270,21 @@ sample_data <- data.frame(
   AMJ = c(-0.3, 0.4),
   MJJ = c(-0.1, 0.7)
 )
-print(sample_data)
-enso_main(sample_data, "2000-2001", "2001-2002")
+# print(sample_data)
+ enso_main(sample_data, "2000-2001", "2001-2002")
 
 
 
+# #convert csv to Rda file
+# enso_data <- readxl::read_excel("Data/ENSO.xlsx")
+# enso_data = enso_data[,2:11]
+#
+# # Save the data as an Rda file
+# save(enso_data, file = "ENSO.Rda")
+#
+# #check that it works
+# load("Data/ENSO.Rda")
+# print(enso_data)
 
 
 
