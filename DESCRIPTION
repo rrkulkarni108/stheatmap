@@ -37,4 +37,5 @@ Imports:
     tidyr, 
     reshape2, 
     dendextend,
-    pheatmap
+    pheatmap, 
+    magrittr
