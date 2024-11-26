@@ -243,6 +243,35 @@ AssignClustersByWeek <- function(X, K = 6) {
 
 
 
+# This function identifies which counties are in each cluster severity
+
+county_severities <- function(cluster_results, K = 6, pretty_print = TRUE) {
+  #cluster_df <- AssignClustersByWeek(X, K = 6)
+  # Extract relevant data from cluster_results
+  X_with_clusters <- cluster_results$X_with_clusters
+  cluster_summary <- cluster_results$cluster_summary
+
+  # Group by Cluster and include Severity
+  counties_by_cluster <- X_with_clusters %>%
+    group_by(Cluster) %>%
+    summarise(
+      Severity = first(Drought_Level),  # Get the drought level for the cluster
+      Counties = paste(unique(County), collapse = ", ")  # List unique counties in the cluster
+    )
+
+  # Print the results
+  print(counties_by_cluster)
+  if (pretty_print == TRUE){
+    # Loop to print each cluster's details
+    for (i in seq_len(nrow(counties_by_cluster))) {
+      cat(paste("Cluster", counties_by_cluster$Cluster[i],
+                "(Severity:", counties_by_cluster$Severity[i], "):\n"))
+      cat(counties_by_cluster$Counties[i], "\n\n")
+    }
+  }
+
+
+}
 
 
 
