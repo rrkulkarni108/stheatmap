@@ -114,9 +114,15 @@ AssignClusters <- function(X, K = 6, M = NULL) {
     group_by(Cluster) %>%
     summarise_at(vars("None", "D0", "D1", "D2", "D3", "D4"), mean, na.rm = TRUE)
 
+  # Determine Drought_Level labels for clusters
+  cluster_summary$Drought_Level <- apply(cluster_summary[, c("None", "D0", "D1", "D2", "D3", "D4")], 1, function(x) {
+    names(x)[which.max(x)]
+  })
 
+  # Merge Drought_Level labels back to X_wide
+  X_wide <- merge(X_wide, cluster_summary[, c("Cluster", "Drought_Level")], by = "Cluster")
 
-
+  return(list(X_wide = X_wide, hc = hc, cluster_summary = cluster_summary))
 
 }
 
