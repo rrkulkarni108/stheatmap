@@ -1,5 +1,5 @@
 ## Package `stheatmap`: Heatmap for Large Spatiotemporal Series 
-## Includes ENSO SpatioTemporal Data Visualizations 
+### Includes ENSO SpatioTemporal Data Visualizations 
 
 ### Radhika Kulkarni
 
