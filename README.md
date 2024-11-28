@@ -32,12 +32,16 @@ Overall there is a heatmap function (TBD) and two plotting functions for ENSO da
 
 ### Drought Heatmap Usage:
 
-* You must use as input to Plot_Heat() function-the data from ([US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx)) with:
+* You must use as input to Plot_Heat() function-the **cleaned** data from US Drought Monitor:
+* Download the data from from ([US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx)):
     * your specified start and end date
     * Area Type: State 
     * Statistics category: Percent Area (the percentage of the area of that county which has the specified drought severity category)
     * Statistics type: Cumulative (percentage of area adds up to 100%)
-    * Output format : CSV . 
+    * Output format : CSV
+* Clean the data:
+     * Drop all columns except MapDate, None, D0, D1, D2, D3, D4, ValidStart
+     * Your data is now ready to be input
 
 ## Still need to complete:
 * There are bugs in the heatmap code so I need to complete the functions and fix the errors
