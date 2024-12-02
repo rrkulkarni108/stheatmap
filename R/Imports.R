@@ -8,5 +8,6 @@
 #' @import ggplot2
 #' @importFrom stats hclust
 #' @importFrom stats reorder
+#' @importFrom magrittr %>%
 #' @import cluster
 NULL
