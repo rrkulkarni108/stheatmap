@@ -38,4 +38,5 @@ Imports:
     reshape2, 
     dendextend,
     pheatmap, 
-    magrittr
+    magrittr, 
+    stringr
