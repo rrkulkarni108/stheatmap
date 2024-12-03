@@ -27,7 +27,7 @@
 #' MJJ = c(-0.1, 0.7)
 #' )
 #' print(sample_data)
-#' enso_main(sample_data, "2000-2001", "2001-2002")
+#' enso_main(sample_data, "2001-01-01", "2002-01-01")
 
 
 #library(dplyr)
