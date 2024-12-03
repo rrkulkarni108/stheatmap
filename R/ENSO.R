@@ -75,6 +75,35 @@ rollingAvg <- function(enso_arr) {
 
 
 
+#get the 3 month rolling averages of ONI to get avg ONI for individual month
+rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
+  # Calculate 3-month rolling averages
+  val_arr <- c()
+  # Since my desired data range starts from January of 2001, I ignore the first five entries of 2000
+  # and start with the the 6th entry- which is the 3month average ONI for december 2000, january 2001 and february 2001.
+  # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
+  #print(enso_arr)
+
+  # Loop through the array, starting from the first valid 3-month window (our rectangle of data always allows this from enso_main)
+  for (i in 1:(length(enso_arr) - 2)) {
+    if (!is.na(enso_arr[i]) &&
+        !is.na(enso_arr[i + 1]) && !is.na(enso_arr[i + 2])) {
+      avg_val <- mean(enso_arr[i:(i + 2)])
+      val_arr <- c(val_arr, avg_val)
+    } else if( is.na(enso_arr[i]) ||
+              is.na(enso_arr[i + 1]) || is.na(enso_arr[i + 2])    ) {
+      #print("entered")
+      val_arr <-c(val_arr, NA) #keep NAs for now, remove them from the list at the end
+    }
+      else{
+        break
+    }
+  }
+  #print(val_arr)
+
+  return (val_arr)
+
+}
 
 
 ## ONI value >= 0.5 and <1 is considered a weak El Nino, >=1.0 to <1.5 a moderate El Nino,
