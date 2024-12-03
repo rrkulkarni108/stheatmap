@@ -36,7 +36,5 @@ Imports:
     stats,
     tidyr, 
     reshape2, 
-    dendextend,
-    pheatmap, 
     magrittr, 
     stringr
