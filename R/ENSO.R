@@ -102,7 +102,7 @@ rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
         break
     }
   }
-  print(val_arr)
+  #print(val_arr)
   val_arr_start <-  c() # Initialize start vector
   val_arr_result <- c() # Initialize result vector
   # Round the result to 2 decimal places for easy read of plot later
