@@ -75,44 +75,48 @@ rollingAvg <- function(enso_arr) {
 
 
 
-#get the 3 month rolling averages of ONI to get avg ONI for individual month
+# Obtain the 3 month rolling averages of ONI to get avg ONI for individual month
+# For example: Suppose my desired data range starts from January of 2001, then I ignore the first five entries of 2000
+# and start with the the 6th entry- which is the 3month average ONI for december 2000, january 2001 and february 2001.
+# I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
+
+## Returns a list of average ONI values, one for each month desired by user
 rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
   # Calculate 3-month rolling averages
-  val_arr <- c()
-  # Since my desired data range starts from January of 2001, I ignore the first five entries of 2000
-  # and start with the the 6th entry- which is the 3month average ONI for december 2000, january 2001 and february 2001.
-  # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
-  #print(enso_arr)
+  val_arr <- c() # Initialize vector
 
   # Loop through the array, starting from the first valid 3-month window (our rectangle of data always allows this from enso_main)
   for (i in 1:(length(enso_arr) - 2)) {
+    # Check that none of the values are NA in our average
     if (!is.na(enso_arr[i]) &&
         !is.na(enso_arr[i + 1]) && !is.na(enso_arr[i + 2])) {
-      avg_val <- mean(enso_arr[i:(i + 2)])
-      val_arr <- c(val_arr, avg_val)
+      avg_val <- mean(enso_arr[i:(i + 2)]) # Calculate mean
+      val_arr <- c(val_arr, avg_val) # Add the mean to the existing vector
+
+      # Else check if there are any NAs in any of the 3 values, add NA to the list
     } else if( is.na(enso_arr[i]) ||
               is.na(enso_arr[i + 1]) || is.na(enso_arr[i + 2])    ) {
-      #print("entered")
-      val_arr <-c(val_arr, NA) #keep NAs for now, remove them from the list at the end
+      val_arr <-c(val_arr, NA) #Keep NAs for now, remove them from the list at the end
     }
       else{
         break
     }
   }
   #print(val_arr)
-  val_arr_start <-  c()
-  val_arr_result <- c()
+  val_arr_start <-  c() # Initialize start vector
+  val_arr_result <- c() # Initialize result vector
   # Round the result to 2 decimal places for easy read of plot later
   val_arr <- round(val_arr, 2)
 
+  # 4 Cases of month combinations, since each season has overlap of months fom two years
+  # One season has months 7-12 and also 1-6 in the same row
   if (startMonth >= 8 && startMonth <= 12 ){
     val_arr_start <- val_arr[(startMonth-7):length(val_arr)]
   }
   else if (startMonth < 8 && startMonth >= 1){
     val_arr_start <- val_arr[(startMonth+5):length(val_arr)]
   }
-  # cat("this is val_arr_start: ", val_arr_start)
-  # cat("\n")
+
   if (endMonth <= 5 && endMonth >= 1 ){
     val_arr_result <- val_arr_start[1:(length(val_arr_start) - (5-endMonth))]
   }
@@ -122,8 +126,8 @@ rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
 
   # Remove the NAs from the list if there are any
   val_arr <- val_arr_result[!is.na(val_arr_result)]
-  print(val_arr)
-  return (val_arr)
+  #print(val_arr)
+  return (val_arr) # Returns a list of average oni values, one for each month desired by user
 
 }
 
