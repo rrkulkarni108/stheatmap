@@ -26,7 +26,6 @@ Overall there is a heatmap function (TBD) and two plotting functions for ENSO da
 
 ### ENSO Data Usage:
 * You must use as input to enso_main() function- the datatable from [National Weather Service, Climate Prediction Center](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php).
-* Input to heatmap function must come from [US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx) data download.
 
 * If link breaks, here is URL : https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
 
@@ -48,6 +47,5 @@ Overall there is a heatmap function (TBD) and two plotting functions for ENSO da
 * need to ensure R style is correct across all files
 * fix warnings
 * make vignette on my sample dataset
-* add more plotting using shp files if time permits
 
 
