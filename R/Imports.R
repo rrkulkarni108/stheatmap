@@ -8,6 +8,7 @@
 #' @import ggplot2
 #' @importFrom stats hclust
 #' @importFrom stats reorder
+#' @importFrom stats cutree dist
 #' @importFrom magrittr %>%
 #' @import cluster
 NULL
