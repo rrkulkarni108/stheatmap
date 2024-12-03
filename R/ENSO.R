@@ -102,14 +102,15 @@ rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
         break
     }
   }
-  #print(val_arr)
+  print(val_arr)
   val_arr_start <-  c() # Initialize start vector
   val_arr_result <- c() # Initialize result vector
   # Round the result to 2 decimal places for easy read of plot later
   val_arr <- round(val_arr, 2)
 
-  # 4 Cases of month combinations, since each season has overlap of months fom two years
+  # 5 Cases of month combinations, since each season has overlap of months fom two years
   # One season has months 7-12 and also 1-6 in the same row
+  # Months 6 and 7 are on two rows so we have special edge case for that situation
   if (startMonth >= 8 && startMonth <= 12 ){
     val_arr_start <- val_arr[(startMonth-7):length(val_arr)]
   }
@@ -120,10 +121,13 @@ rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
   if (endMonth <= 5 && endMonth >= 1 ){
     val_arr_result <- val_arr_start[1:(length(val_arr_start) - (5-endMonth))]
   }
-  else if (endMonth > 5 && endMonth <= 12){
+  else if (endMonth > 5 && endMonth <= 7){
+    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (12-(endMonth-5)))]
+  }
+  else if (endMonth > 7 && endMonth <= 12){
     val_arr_result <- val_arr_start[1:(length(val_arr_start) - (endMonth-7))]
   }
-
+  #print(val_arr_start)
   # Remove the NAs from the list if there are any
   val_arr <- val_arr_result[!is.na(val_arr_result)]
   #print(val_arr)
@@ -252,7 +256,7 @@ plotENSOSeries <- function(data) {
 
 
 # Main function which calls the subfunctions
-enso_main <- function(data, StartDate, EndDate) {
+enso_main <- function(data, StartDate, EndDate, combine = TRUE) {
 
   # Convert StartDate and EndDate to Date object
   start_date <- as.Date(StartDate, format = "%Y-%m-%d")
@@ -296,6 +300,11 @@ enso_main <- function(data, StartDate, EndDate) {
   enso_subset <- enso %>% select(-c(Season))
   enso_arr <- as.vector(t(enso_subset)) #create array of ONI values
   val_arr <- rollingAvgTest(enso_arr, startMonth, endMonth) #get individual ONI average for each month
+  print(val_arr)
+  # If we want the combination graph of both ENSO and Drought, this is true (gets called in combine_drought_enso() function in Heatmap_Functions.R)
+  if (combine == TRUE){
+    val_arr <- rep(val_arr, each = 4)
+  }
 
   # Extract years labels from Season column
   yrs <- c()
@@ -304,6 +313,7 @@ enso_main <- function(data, StartDate, EndDate) {
     yrs <- c(yrs, rep(year2, 12))
   }
   yrs <- yrs[1:length(val_arr)]
+  #print(yrs)
 
   # Create dataframe to be used for plotting
   # Create data frame
@@ -364,27 +374,29 @@ sample_data <- data.frame(
 
 
 # #convert csv to Rda file
-#  enso_data <- readxl::read_excel("Data/ENSO.xlsx")
-#  enso_data = enso_data[,2:ncol(enso_data)]
+# enso_data <- readxl::read_excel("Data/ENSO.xlsx")
+# enso_data = enso_data[,2:ncol(enso_data)]
 # #
 # # # Save the data as an Rda file
 # save(enso_data, file = "ENSO.Rda")
 # #
 # # #check that it works
-# load("Data/ENSO.Rda")
-# print(enso_data)
+#load("Data/ENSO.Rda")
+#print(enso_data)
 
 
-# TESTING THE user input date format conversion to seasonal data format
-
-# This is the edge case with NAs
-# StartDate <- "2021-01-01"
-# EndDate <- "2021-08-01"
-
-
+# # TESTING THE user input date format conversion to seasonal data format
+#
+# # This is the edge case with NAs
+# # StartDate <- "2021-01-01"
+# # EndDate <- "2021-08-01"
+#
+#
 # # Regular case:
-# StartDate <- "2001-07-01"
-# EndDate <- "2002-04-01"
+# # StartDate <- "2001-07-01"
+# # EndDate <- "2002-04-01"
+# StartDate <- "2001-01-01"
+# EndDate <- "2021-06-01"
 # # Convert StartDate and EndDate to Date object
 # start_date <- as.Date(StartDate, format = "%Y-%m-%d")
 # end_date <- as.Date(EndDate, format = "%Y-%m-%d")
@@ -418,6 +430,7 @@ sample_data <- data.frame(
 # }
 # startSeason
 # endSeason
+# options(tibble.width = Inf)
 # # Reshape data to long format
 # enso <- findDateSubset(enso_data, startSeason, endSeason)
 # print(enso)
