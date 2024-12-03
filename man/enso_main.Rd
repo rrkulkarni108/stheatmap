@@ -3,8 +3,11 @@
 \name{enso_main}
 \alias{enso_main}
 \title{Functions that create a ENSO Time Series Plot of ONI values}
+\usage{
+enso_main(data, StartDate, EndDate)
+}
 \arguments{
-\item{dataframe}{n by p matrix containing ONI values, from National Weather Service, Climate Prediction Center: https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php}
+\item{data}{n by p matrix containing ONI values, from National Weather Service, Climate Prediction Center: https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php}
 
 \item{StartDate}{string value for season start date "year1-year2", the starting date of your subset, i.e. "2000-2001", comes from season column of the dataframe}
 
@@ -35,5 +38,5 @@ AMJ = c(-0.3, 0.4),
 MJJ = c(-0.1, 0.7)
 )
 print(sample_data)
-enso_main(sample_data, "2000-2001", "2001-2002")
+enso_main(sample_data, "2001-01-01", "2002-01-01")
 }
