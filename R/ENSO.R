@@ -75,6 +75,8 @@ rollingAvg <- function(enso_arr) {
 
 
 
+
+
 ## ONI value >= 0.5 and <1 is considered a weak El Nino, >=1.0 to <1.5 a moderate El Nino,
 #  >=1.5 and <2 a strong El Nino, and >=2 a very strong El Nino;
 #  similarly, values <= -0.5 and values > -1.0 is a weak La Nina,
@@ -196,18 +198,49 @@ plotENSOSeries <- function(data) {
 
 # Main function which calls the subfunctions
 enso_main <- function(data, StartDate, EndDate) {
-  # Reshape data to long format
-  enso <- findDateSubset(data, StartDate, EndDate)
 
-  # Extract only the relevant columns (exclude first two)
-  if ("EnsoType" %in% colnames(enso)) {
-    enso_subset <- enso %>% select(-c(EnsoType, Season))
+  # Convert StartDate and EndDate to Date object
+  start_date <- as.Date(StartDate, format = "%Y-%m-%d")
+  end_date <- as.Date(EndDate, format = "%Y-%m-%d")
+
+  if(start_date > end_date){
+    stop("StartDate must be before EndDate. Please check your values.")
   }
 
-  #remove season column so we can get array of just ONI values
+  # Extract year and month for StartDate and EndDate
+  startYear <- as.integer(format(start_date, "%Y"))
+  startMonth <- as.integer(format(start_date, "%m"))
+
+  endYear <- as.integer(format(end_date, "%Y"))
+  endMonth <- as.integer(format(end_date, "%m"))
+
+  # Determine the start season
+  startSeason = "" #initialize endSeason
+  if (startMonth >= 1 && startMonth <= 6) {
+    startSeason <- paste(startYear - 1, startYear, sep = "-")
+  } else {
+    startSeason <- paste(startYear, startYear + 1, sep = "-")
+  }
+
+  # Determine the end season
+  endSeason = "" #initialize endSeason
+  if (endMonth >= 1 && endMonth <= 6) {
+    endSeason <- paste(endYear - 1, endYear, sep = "-")
+  } else {
+    endSeason <- paste(endYear, endYear + 1, sep = "-")
+  }
+  # Reshape data to long format
+  enso <- findDateSubset(data, startSeason, endSeason) #takes only the rows (seasons) which user wants
+
+  # # Extract only the relevant columns (exclude first two)
+  # if ("EnsoType" %in% colnames(enso)) {
+  #   enso_subset <- enso %>% select(-c(EnsoType, Season))
+  # }
+
+  # Remove season column so we can get array of just ONI values
   enso_subset <- enso %>% select(-c(Season))
   enso_arr <- as.vector(t(enso_subset)) #create array of ONI values
-  val_arr <- rollingAvg(enso_arr) #get individual ONI average for each month
+  val_arr <- rollingAvgTest(enso_arr, startMonth, endMonth) #get individual ONI average for each month
 
   # Extract years labels from Season column
   yrs <- c()
@@ -250,8 +283,8 @@ enso_data <- enso_data #name of data variable is enso_data
 
 #Example 1: ENSO from 2001-2021
 #enso_data <- readxl::read_excel("Data/ENSO.xlsx")
-#enso_data = enso_data[,2:11] #do not need first column
-enso_main(enso_data, "2000-2001",  "2020-2021")
+#enso_data = enso_data[,2:14] #do not need first column
+enso_main(enso_data, "2001-01-01",  "2021-06-01")
 
 
 #Example 2: Sample data with only two years
@@ -270,28 +303,21 @@ sample_data <- data.frame(
   AMJ = c(-0.3, 0.4),
   MJJ = c(-0.1, 0.7)
 )
-# print(sample_data)
- enso_main(sample_data, "2000-2001", "2001-2002")
+#print(sample_data)
+#enso_main(sample_data, "2001-01-01", "2002-01-01")
 
 
 
 # #convert csv to Rda file
-# enso_data <- readxl::read_excel("Data/ENSO.xlsx")
-# enso_data = enso_data[,2:11]
-#
-# # Save the data as an Rda file
+#  enso_data <- readxl::read_excel("Data/ENSO.xlsx")
+#  enso_data = enso_data[,2:ncol(enso_data)]
+# #
+# # # Save the data as an Rda file
 # save(enso_data, file = "ENSO.Rda")
-#
-# #check that it works
+# #
+# # #check that it works
 # load("Data/ENSO.Rda")
 # print(enso_data)
-
-
-
-
-
-
-
 
 
 
