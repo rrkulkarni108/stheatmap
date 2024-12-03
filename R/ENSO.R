@@ -1,34 +1,3 @@
-#' Functions that create a ENSO Time Series Plot of ONI values
-#'
-#' @name enso_main
-#' @param dataframe n by p matrix containing ONI values, from National Weather Service, Climate Prediction Center: https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
-#' @param StartDate string value for season start date "year1-year2", the starting date of your subset, i.e. "2000-2001", comes from season column of the dataframe
-#' @param EndDate string value for season end date "year19-year20", the starting date of your subset, i.e. "2020-2021", comes from season column of the dataframe
-#'
-#' @return p Main package plot which is a barplot visualization of the ENSO intensities by month
-#' @export
-#'
-#' @examples
-#' # Give example
-#' # Load the data
-#' sample_data <- data.frame(
-#' Season = c("2000-2001", "2001-2002"),
-#' JJA = c(-0.6, -0.1),
-#' JAS = c(-0.5, -0.1),
-#' ASO = c(-0.5, -0.2),
-#' SON = c(-0.6, -0.3),
-#' OND = c(-0.7, -0.3),
-#' NDJ = c(-0.7, -0.3),
-#' DJF = c(-0.7, -0.1),
-#' JFM = c(-0.5, 0.0),
-#' FMA = c(-0.4, 0.2),
-#' MAM = c(-0.3, 0.2),
-#' AMJ = c(-0.3, 0.4),
-#' MJJ = c(-0.1, 0.7)
-#' )
-#' print(sample_data)
-#' enso_main(sample_data, "2001-01-01", "2002-01-01")
-
 
 #library(dplyr)
 #library(lubridate)
@@ -254,6 +223,37 @@ plotENSOSeries <- function(data) {
     )#scale_y_discrete(limits = rev(unique(data$YrMon)), breaks = function(y) y[seq(1, length(y), by = 12)])# scale_y_discrete(breaks = function(y) y[seq(1, length(y), by = 12)])
 }
 
+#' Functions that create a ENSO Time Series Plot of ONI values
+#'
+#' @param data n by p matrix containing ONI values, from National Weather Service, Climate Prediction Center: https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
+#' @param StartDate string value for season start date "year1-year2", the starting date of your subset, i.e. "2000-2001", comes from season column of the dataframe
+#' @param EndDate string value for season end date "year19-year20", the starting date of your subset, i.e. "2020-2021", comes from season column of the dataframe
+#'
+#' @return p Main package plot which is a barplot visualization of the ENSO intensities by month
+#' @export
+#'
+#' @examples
+#' # Give example
+#' # Load the data
+#' sample_data <- data.frame(
+#' Season = c("2000-2001", "2001-2002"),
+#' JJA = c(-0.6, -0.1),
+#' JAS = c(-0.5, -0.1),
+#' ASO = c(-0.5, -0.2),
+#' SON = c(-0.6, -0.3),
+#' OND = c(-0.7, -0.3),
+#' NDJ = c(-0.7, -0.3),
+#' DJF = c(-0.7, -0.1),
+#' JFM = c(-0.5, 0.0),
+#' FMA = c(-0.4, 0.2),
+#' MAM = c(-0.3, 0.2),
+#' AMJ = c(-0.3, 0.4),
+#' MJJ = c(-0.1, 0.7)
+#' )
+#' print(sample_data)
+#' enso_main(sample_data, "2001-01-01", "2002-01-01")
+
+
 
 # Main function which calls the subfunctions
 enso_main <- function(data, StartDate, EndDate) {
@@ -341,15 +341,15 @@ enso_main <- function(data, StartDate, EndDate) {
 # tester code
 # Load the data
 
-load("Data/ENSO.Rda")
-ls()
-enso_data <- enso_data #name of data variable is enso_data
+# load("Data/ENSO.Rda")
+# ls()
+# enso_data <- enso_data #name of data variable is enso_data
 
 
 #Example 1: ENSO from 2001-2021
 #enso_data <- readxl::read_excel("Data/ENSO.xlsx")
 #enso_data = enso_data[,2:14] #do not need first column
-enso_main(enso_data, "2001-01-01",  "2021-06-01")
+#enso_main(enso_data, "2001-01-01",  "2021-06-01")
 
 
 #Example 2: Sample data with only two years
@@ -392,11 +392,11 @@ sample_data <- data.frame(
 # # EndDate <- "2021-08-01"
 #
 #
-# # Regular case:
-# # StartDate <- "2001-07-01"
-# # EndDate <- "2002-04-01"
+# Regular case:
+# StartDate <- "2001-07-01"
+# EndDate <- "2002-04-01"
 # StartDate <- "2001-01-01"
-# EndDate <- "2021-06-01"
+# EndDate <- "2006-06-01"
 # # Convert StartDate and EndDate to Date object
 # start_date <- as.Date(StartDate, format = "%Y-%m-%d")
 # end_date <- as.Date(EndDate, format = "%Y-%m-%d")
