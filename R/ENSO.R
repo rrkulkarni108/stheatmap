@@ -371,4 +371,57 @@ sample_data <- data.frame(
 # print(enso_data)
 
 
+# TESTING THE user input date format conversion to seasonal data format
+
+# This is the edge case with NAs
+# StartDate <- "2021-01-01"
+# EndDate <- "2021-08-01"
+
+
+# # Regular case:
+# StartDate <- "2001-07-01"
+# EndDate <- "2002-04-01"
+# # Convert StartDate and EndDate to Date object
+# start_date <- as.Date(StartDate, format = "%Y-%m-%d")
+# end_date <- as.Date(EndDate, format = "%Y-%m-%d")
+# if(start_date > end_date){
+#   stop("StartDate must be before EndDate. Please check your values.")
+# }
+#
+# # Extract year and month for StartDate and EndDate
+# startYear <- as.integer(format(start_date, "%Y"))
+# startMonth <- as.integer(format(start_date, "%m"))
+#
+# endYear <- as.integer(format(end_date, "%Y"))
+# endMonth <- as.integer(format(end_date, "%m"))
+#
+# #startMonth <- as.integer(format(as.Date(StartDate, format = "%Y-%m-%d"), "%m"))
+# #endMonth <- as.integer(format(as.Date(EndDate, format = "%Y-%m-%d"), "%m"))
+# # Determine the start season
+# startSeason = "" #initialize endSeason
+# if (startMonth >= 1 && startMonth <= 7) {
+#   startSeason <- paste(startYear - 1, startYear, sep = "-")
+# } else {
+#   startSeason <- paste(startYear, startYear + 1, sep = "-")
+# }
+#
+# # Determine the end season
+# endSeason = "" #initialize endSeason
+# if (endMonth >= 1 && endMonth <= 5) {
+#   endSeason <- paste(endYear - 1, endYear, sep = "-")
+# } else {
+#   endSeason <- paste(endYear, endYear + 1, sep = "-")
+# }
+# startSeason
+# endSeason
+# # Reshape data to long format
+# enso <- findDateSubset(enso_data, startSeason, endSeason)
+# print(enso)
+# enso_subset <- enso %>% select(-c(Season))
+# enso_arr <- as.vector(t(enso_subset)) #create array of ONI values
+# val_arr <- rollingAvgTest(enso_arr, startMonth, endMonth) #get individual ONI average for each month
+# val_arr
+
+
+
 
