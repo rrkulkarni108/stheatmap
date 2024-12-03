@@ -256,7 +256,7 @@ plotENSOSeries <- function(data) {
 
 
 # Main function which calls the subfunctions
-enso_main <- function(data, StartDate, EndDate, combine = TRUE) {
+enso_main <- function(data, StartDate, EndDate) {
 
   # Convert StartDate and EndDate to Date object
   start_date <- as.Date(StartDate, format = "%Y-%m-%d")
@@ -300,11 +300,11 @@ enso_main <- function(data, StartDate, EndDate, combine = TRUE) {
   enso_subset <- enso %>% select(-c(Season))
   enso_arr <- as.vector(t(enso_subset)) #create array of ONI values
   val_arr <- rollingAvgTest(enso_arr, startMonth, endMonth) #get individual ONI average for each month
-  print(val_arr)
-  # If we want the combination graph of both ENSO and Drought, this is true (gets called in combine_drought_enso() function in Heatmap_Functions.R)
-  if (combine == TRUE){
-    val_arr <- rep(val_arr, each = 4)
-  }
+  #print(val_arr)
+  # # If we want the combination graph of both ENSO and Drought, this is true (gets called in combine_drought_enso() function in Heatmap_Functions.R)
+  # if (combine == TRUE){
+  #   val_arr <- rep(val_arr, each = 4)
+  # }
 
   # Extract years labels from Season column
   yrs <- c()
@@ -332,7 +332,7 @@ enso_main <- function(data, StartDate, EndDate, combine = TRUE) {
 
   # Plot 2- plot the data- main plot
   p <-  plotENSOSeries(colored_data)
-  return(list(q, p))
+  return(list(q, p, val_arr))
 }
 
 
