@@ -1,54 +1,55 @@
-#' Functions that visualize spatiotemporal data using heatmaps
-#'
-#' @param X n by p matrix containing n data points to cluster.
-#'
-#' @return a data matrix with correct format
-#' @export
-#'
-#' @examples
-#' # Give example
 
-
-
-# Functions that visualize spatiotemporal data using heatmaps
 
 # Function that subsets the data and reformats to be appropriate input for other functions
 ###############################################################################################
 # Description of supplied parameters:
-# X - n x p training data, input format is .Rda file
-# y - a vector of size n of class labels
+# X - n x p cleaned training data, input format is .Rda file
+# start_date string of format "yyyy-mm-dd", starting date of time series
+# end_date string of format "yyyy-mm-dd", ending date of time series
 # OUTPUT
 
-#convert csv to Rda file
-#X <- read.csv("Data/Drought.csv")
-
-# Save the data as an Rda file
-#save(X, file = "Drought.Rda")
-
-#check that it works
-#load("Drought.Rda")
-#print(X[1:10])
 
 
+# ## Add a function that subsets the data to take only relevant columns
+# ## and reshape format
+# SubsetData <- function(X) {
+#   #library(reshape2)
+#
+#   # select relevant columns
+#   X_subset <- X[, c("MapDate", "County", "None", "D0", "D1", "D2", "D3", "D4")]
+#
+#   # reshape data to long format from wide format
+#   X_melt <- reshape2::melt(X_subset, id.vars = c("MapDate", "County"),
+#                  variable.name = "Drought_Level", value.name = "Percentage")
+#
+#   # change the type from MapDate to Date type
+#   X_melt$MapDate <- as.Date(as.character(X_melt$MapDate), format = "%Y%m%d")
+#
+#   return(X_melt)
+# }
 
-## Add a function that subsets the data to take only relevant columns
-## and reshape format
-SubsetData <- function(X) {
-  #library(reshape2)
 
-  # select relevant columns
+# Add a function that subsets the data to take only relevant columns and reshape format
+# Returns a data frame subsetted by the start and end date of MapDate
+SubsetData <- function(X, start_date, end_date) {
+  # Select relevant columns
   X_subset <- X[, c("MapDate", "County", "None", "D0", "D1", "D2", "D3", "D4")]
 
-  # reshape data to long format from wide format
-  X_melt <- reshape2::melt(X_subset, id.vars = c("MapDate", "County"),
-                 variable.name = "Drought_Level", value.name = "Percentage")
+  # Convert MapDate to Date type and filter by start_date and end_date
+  X_subset <- X_subset %>%
+    mutate(MapDate = as.Date(as.character(MapDate), format = "%Y%m%d")) %>%
+    filter(MapDate >= as.Date(start_date) & MapDate <= as.Date(end_date))
 
-  # change the type from MapDate to Date type
-  X_melt$MapDate <- as.Date(as.character(X_melt$MapDate), format = "%Y%m%d")
+  # Reshape data to long format
+  X_melt <- reshape2::melt(X_subset, id.vars = c("MapDate", "County"),
+                           variable.name = "Drought_Level", value.name = "Percentage")
+
+  # Add a numeric Week column
+  X_melt <- X_melt %>%
+    mutate(Week = as.numeric(difftime(MapDate, min(MapDate), units = "weeks")))
 
   return(X_melt)
 }
-
 
 
 ## Return output
@@ -57,30 +58,9 @@ SubsetData <- function(X) {
 
 
 
-#' Functions that visualize spatiotemporal data using heatmaps
-#'
-#' @param X n by p matrix containing n data points to cluster.
-#' @param K An integer specifying number of clusters.
-#' @param M K by p matrix of cluster centers.
-#'
-#' @return Explain return
-#' @export
-#'
-#' @examples
-#' # Give example
-
-
-# Function that assigns clusters and reformats to be appropriate input for other functions
-###############################################################################################
-# Description of supplied parameters:
-# X - n x p training data
-# y - a vector of size n of class labels
-# OUTPUT
-
-
 ## Use hierarchical clustering with Euclidean metric to determine clusters
 # there are supposed to be 6 clusters for 6 drought severity types
-AssignClusters <- function(X, K = 6, M = NULL) {
+AssignClusters <- function(X, K = 6) {
   # Compute average percentages over time for each county
   X_avg <- X %>%
     group_by(County, Drought_Level) %>%
@@ -131,23 +111,17 @@ AssignClusters <- function(X, K = 6, M = NULL) {
 ##########################################################################
 
 
-
-# Function that creates heatmap from the data using other helper functions
+# Function that creates the dataframe structure for the heatmap;
+# returns the reformatted dataframe to be input to PlotHeat() function
 ###############################################################################################
 # Description of supplied parameters:
-# X - n x p training data
-# y - a vector of size n of class labels
-# OUTPUT
+# X - dataframe of X_with_clusters taken from cluster output of AssignClustersbyWeek() function
+# OUTPUT dataframe with columns MapDate, County, Cluster, Week
 
-#'
-#' @param X n by p matrix containing n data points to cluster. #change this
-#'
-#' @return a dataframe ready to be plotted
-#' @export
-#'
-#' @examples
-#' # Give example
 
+# Function which takes the X_with_clusters dataframe from AssignClustersbyWeek() function output
+# and selects columns MapDate, County, Cluster, Week, and makes Cluster a factor
+# Returns a n x 4 dataframe for input to PlotHeat() function
 CreateHeatmap <- function(X) {
   # Subset the data to relevant columns and reshape to long format
   X_melt <- X %>%
@@ -161,8 +135,7 @@ CreateHeatmap <- function(X) {
 }
 
 
-
-## Return output
+## Return output: n x 4 dataframe for input to PlotHeat() function
 ##########################################################################
 
 
@@ -170,9 +143,9 @@ CreateHeatmap <- function(X) {
 # Function that plots data and allows for more control over plotting parameters
 ###############################################################################################
 # Description of supplied parameters:
-# X - n x p training data
-# y - a vector of size n of class labels
-# OUTPUT
+# X - n x 4 dataframe from CreateHeatmap() function
+# palette - a vector of size 6 of color and hexcode for clusters, which can be specified by user. Default vector color scheme given.
+# OUTPUT - heatmap of the drought clusters with y-axis the weeks from 1 to Week n and X-axis the labels of all the counties in the state. Colored by palette scheme.
 
 PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
                                     "2" = "#66BD63", #D0 severity
@@ -182,10 +155,11 @@ PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
                                     "6" =  "darkred" #D4 severity
                                     )) {
   # Plot the heatmap
-  X$County <- str_remove(X$County, " County") #remove the word county since it takes a lot of space in X label
+  #library(stringr)
+  X$County <- stringr::str_remove(X$County, " County") #remove the word county since it takes a lot of space in X label
   #reorder weeks from least to greatest
   X$Week <- as.integer(factor(X$Week, levels = rev(sort(unique(X$Week)))))#X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
-  print(X$Week)
+  #print(X$Week)
   heatmap_plot <- ggplot(data = X, aes(x = County, y = Week, fill = Cluster)) +
     geom_tile() +
     scale_fill_manual(
@@ -212,7 +186,7 @@ PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
 
 
 
-## Return output
+## Return output - heatmap of the drought clusters with y-axis the weeks from 1 to Week n and X-axis the labels of all the counties in the state. Colored by palette scheme.
 ##########################################################################
 
 
@@ -222,10 +196,17 @@ PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
 
 
 
+# Function that assigns clusters and reformats to be appropriate input for other functions
+###############################################################################################
+# Description of supplied parameters:
+# X - n x 5 dataframe with columns MapDate, County, Drought_Level, Percentage, Week
+# K - an integer value of number of clusters, for Drought data typically 6 by default
+# OUTPUT list of clusters for each week, hierarchical clustering method description, cluster summary
 
+
+# Input: Dataframe with columns MapDate, County, Drought_Level, Percentage, Week
 AssignClustersByWeek <- function(X, K = 6) {
   # Compute average percentages over time for each week in each county
-  #Week <- X$MapDate
   X_avg <- X %>%
     group_by(County, MapDate, Drought_Level) %>%
     summarise(Avg_Percentage = mean(Percentage, na.rm = TRUE)) %>%
@@ -271,90 +252,203 @@ AssignClustersByWeek <- function(X, K = 6) {
 }
 
 
+#' Main function that visualizes drought data using heatmaps
+#'
+#' @param drought_data n by p matrix containing n data points to cluster.
+#' @param start_date string of format "yyyy-mm-dd", starting date of time series
+#' @param end_date string of format "yyyy-mm-dd", ending date of time series
+#' @return a heatmap plot of the state's county names on x axis, week time series on y axis and heatmap colored by drought severity category
+#' @export
+#'
+#' @examples
+#' # Give example
 
+drought_main <- function(drought_data, start_date, end_date){
+  drought_data_subset <- SubsetData(drought_data, start_date, end_date)  # Subset and reshape drought data
+  drought_clusters <- AssignClustersByWeek(drought_data_subset, K = 6)  # Assign clusters
+  drought_heatmap_data <- CreateHeatmap(drought_clusters$X_with_clusters)  # Prepare data for heatmap
 
+  # Generate the drought heatmap plot
+  drought_plot <- PlotHeat(drought_heatmap_data)
 
-
-# This function identifies which counties are in each cluster severity
-
-county_severities <- function(cluster_results, K = 6, pretty_print = TRUE) {
-  #cluster_df <- AssignClustersByWeek(X, K = 6)
-  # Extract relevant data from cluster_results
-  X_with_clusters <- cluster_results$X_with_clusters
-  cluster_summary <- cluster_results$cluster_summary
-
-  # Group by Cluster and include Severity
-  counties_by_cluster <- X_with_clusters %>%
-    group_by(Cluster) %>%
-    summarise(
-      Severity = first(Drought_Level),  # Get the drought level for the cluster
-      Counties = paste(unique(County), collapse = ", ")  # List unique counties in the cluster
-    )
-
-  # Print the results
-  print(counties_by_cluster)
-  if (pretty_print == TRUE){
-    # Loop to print each cluster's details
-    for (i in seq_len(nrow(counties_by_cluster))) {
-      cat(paste("Cluster", counties_by_cluster$Cluster[i],
-                "(Severity:", counties_by_cluster$Severity[i], "):\n"))
-      cat(counties_by_cluster$Counties[i], "\n\n")
-    }
-  }
-
-
+  return(list(drought_plot, drought_clusters$X_with_clusters)) # Second item is returned so it can be used in the combine function
 }
 
-
-
-
-
-
-#Test code with dataset
-#load in the dataset
-load("Data/Drought.Rda")
-#ls()
-X <- X #name of data variable is X
-X_melt <- SubsetData(X)
-#cluster_results <- AssignClusters(X_melt, K= 6)
-by_week <- AssignClustersByWeek(X_melt, K = 6)
-X_with_clusters <- by_week$X_with_clusters
-heatmap_data <- CreateHeatmap(X_with_clusters)
-PlotHeat(heatmap_data)
-
-# vals <- county_severities(X_melt, K = 6, pretty_print = TRUE)
-# vals
+#
+# ## Combine Drought Data heatmap with ENSO data barplot into one plot
+#
+#  library(patchwork)
+# #
+# combine_drought_enso <- function(drought_data, enso_data, start_date, end_date) {
+#   # Step 1: Preprocess drought data using existing helper functions
+#   # Generate the drought heatmap plot
+#   drought_out <- drought_main(drought_data, start_date, end_date )
+#   drought_plot <- drought_out[[1]] # Extract the drought heatmap
+#   X_with_clusters <- drought_out[[2]] # Extract the X_with_clusters variable
+#   print(X_with_clusters)
+#
+#   # Step 2: Preprocess ENSO data using existing functions
+#   enso_outs <- enso_main(enso_data, start_date, end_date)  # Generate ENSO plots using enso_main
+#   val_arr <- enso_outs[[3]]  # Extract the val_arr so we can extend the monthly series to length of drought series (weekly)
+#   result <- X_with_clusters %>%
+#     mutate(
+#       MapDate = as.Date(MapDate),                       # Ensure MapDate is in Date format
+#       YearMonth = format(MapDate, "%Y-%m")              # Extract Year-Month
+#     ) %>%
+#     distinct(MapDate, .keep_all = TRUE) %>%             # Keep only unique MapDate rows
+#     group_by(YearMonth) %>%                             # Group by Year-Month
+#     summarise(RowCount = n(), .groups = "drop")         # Count rows and ungroup
+#
+#   monthFrequency <- result$RowCount # Save the frequency of each of the months in the drought dataset
+#   cat("This is val_arr", val_arr)
+#   cat("length of val_arr", length(val_arr))
+#   cat("length of monthFrequency", length(monthFrequency))
+#   val_arr <- rep(val_arr, times = monthFrequency) #replicate each value of the enso array monthFrequency number of times
+#   print(val_arr)
 #
 #
-# county_severities(by_week, K = 6, pretty_print = TRUE)
-#
-
-
-
-
-
-
-
-
-
-
-
-
-# # Group by Cluster to summarize counties and dominant drought severity
-# counties_by_cluster <- X_with_clusters %>%
-#   group_by(Cluster) %>%
-#   summarise(
-#     Severity = first(Drought_Level.y),  # Dominant drought level for the cluster
-#     Counties = paste(unique(County), collapse = ", ")  # List unique counties in the cluster
+#   # Step 4: Create the weekly barplot
+#   # Create dataframe to be used for plotting
+#   weeks <- rep(1:52, length.out = length(val_arr))
+#   plot_data <- data.frame(Weekval = weeks,
+#                           Values = val_arr)
+#   plot_data <- plot_data %>% mutate(#DATE = make_date(Week, 1),
+#                                     Week = 1:1066)
+#   print(plot_data)
+#   # Assign colors for plotting
+#   colored_data <-assignENSOColors(plot_data)
+#   data <- colored_data
+#   # Plot using ggplot
+#   # Color-coded time series barplot with legend
+#   legend_labels <- c(
+#     '#F1959B' = 'Weak El Nino',
+#     '#F07470' = 'Medium El Nino',
+#     '#EA4C46' = 'Strong El Nino',
+#     '#DC1C13' = 'Very Strong El Nino',
+#     '#2A9DF4' = 'Weak La Nina',
+#     '#1167B1' = 'Medium La Nina',
+#     '#003D80' = 'Strong La Nina',
+#     '#d3d3d3' = 'ENSO Neutral'
 #   )
+#   #print("this is printed")
+#   #print(data$ENSO_Type)
+#   options(repr.plot.width = 30, repr.plot.height = 800)
+#   enso_barplot <- ggplot(data, aes(
+#     y = Week,
+#     x = abs(Values),
+#     fill = Color
+#   )) +
 #
-# # Print the results
-# print(counties_by_cluster)
-#
-# # Pretty-print the results for better readability
-# for (i in seq_len(nrow(counties_by_cluster))) {
-#   cat(paste("Cluster", counties_by_cluster$Cluster[i],
-#             "(Severity:", counties_by_cluster$Severity[i], "):\n"))
-#   cat(counties_by_cluster$Counties[i], "\n\n")
+#     geom_bar(aes(
+#       x = abs(Values),
+#       y = Week,
+#       fill = Color
+#     ),
+#     stat = "identity",
+#     show.legend = TRUE) +
+#     scale_fill_identity(name = "ENSO Phase",
+#                         guide = "legend",
+#                         labels = legend_labels) +
+#     #scale_y_reverse() +
+#     theme_minimal() +
+#     labs(x = "Monthly Nino 3.4 Region Average", y = "", title = "Oceanic Nino Index, 2001-2021\nENSO Intensities by Month") +
+#     theme(
+#       #axis.text.y = element_text(size = 8),
+#       axis.title.x = element_text(size = 10),
+#       axis.title.y = element_text(size = 10),
+#       plot.title = element_text(size = 15, hjust = 0.5),
+#       #panel.grid.minor = element_blank(),
+#       #panel.grid.major.y = element_blank()
+#     ) +scale_y_continuous(
+#       trans = "reverse",
+#       breaks = seq(0, total_weeks, by = 50)  # Adjust breaks as needed
+#     ) +
+#     #scale_y_discrete(
+#     #   limits = (unique(data$Week)),
+#     #   breaks = function(y)
+#     #     y[seq(1, length(y), by = 6)]
+#     # )
+#   enso_barplot
+#   # Step 5: Combine the plots using patchwork
+#   # combined_plot <- drought_plot + enso_barplot +
+#   #   plot_layout(ncol = 2, widths = c(2, 1))  # Adjust width ratio for side-by-side comparison
+#   #
+#   # return(combined_plot)
 # }
+#
+# # Example usage
+# # Load your drought and ENSO data
+# load("Data/Drought.Rda")
+# load("Data/ENSO.Rda")
+#
+# # # Generate the combined plot
+#  combined_plot <- combine_drought_enso(drought_data = X, enso_data = enso_data,
+#                                        start_date = "2001-01-01", end_date = "2006-06-01")
+#  print(combined_plot)
+
+
+
+
+## TEST CODE FOR THIS FILE AND FUNCTIONS
+
+ #convert csv to Rda file
+ #X <- read.csv("Data/Drought.csv")
+
+ # Save the data as an Rda file
+ #save(X, file = "Drought.Rda")
+
+ #check that it works
+ #load("Drought.Rda")
+ #print(X[1:10])
+
+
+ # #Test code with dataset
+ # #load in the dataset
+ # load("Data/Drought.Rda")
+ # #ls()
+ # X <- X #name of data variable is X
+ # X_melt2 <- SubsetData2(X, start_date = "2000-01-01", end_date = "2021-06-01")
+
+
+
+
+# # #Test code with dataset
+# # #load in the dataset
+# load("Data/Drought.Rda")
+# # #ls()
+# X <- X #name of data variable is X
+# X_melt <- SubsetData(X, "2001-01-01", "2021-06-01")
+# #cluster_results <- AssignClusters(X_melt, K= 6)
+# by_week <- AssignClustersByWeek(X_melt, K = 6)
+# X_with_clusters <- by_week$X_with_clusters
+# result <- by_week$X_with_clusters %>%
+#   mutate(
+#     MapDate = as.Date(MapDate),                       # Ensure MapDate is in Date format
+#     YearMonth = format(MapDate, "%Y-%m")              # Extract Year-Month
+#   ) %>%
+#   distinct(MapDate, .keep_all = TRUE) %>%             # Keep only unique MapDate rows
+#   group_by(YearMonth) %>%                             # Group by Year-Month
+#   summarise(RowCount = n(), .groups = "drop")         # Count rows and ungroup
+#
+# monthFrequency <- result$RowCount
+# heatmap_data <- CreateHeatmap(X_with_clusters)
+# PlotHeat(heatmap_data)
+# #
+# #
+
+
+
+# load("Data/Drought.Rda")
+# drought_main(X, start_date = "2001-01-01", end_date = "2021-06-01")
+
+
+
+
+
+
+
+
+
+
+
 
