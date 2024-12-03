@@ -100,7 +100,29 @@ rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
     }
   }
   #print(val_arr)
+  val_arr_start <-  c()
+  val_arr_result <- c()
+  # Round the result to 2 decimal places for easy read of plot later
+  val_arr <- round(val_arr, 2)
 
+  if (startMonth >= 8 && startMonth <= 12 ){
+    val_arr_start <- val_arr[(startMonth-7):length(val_arr)]
+  }
+  else if (startMonth < 8 && startMonth >= 1){
+    val_arr_start <- val_arr[(startMonth+5):length(val_arr)]
+  }
+  # cat("this is val_arr_start: ", val_arr_start)
+  # cat("\n")
+  if (endMonth <= 5 && endMonth >= 1 ){
+    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (5-endMonth))]
+  }
+  else if (endMonth > 5 && endMonth <= 12){
+    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (endMonth-7))]
+  }
+
+  # Remove the NAs from the list if there are any
+  val_arr <- val_arr_result[!is.na(val_arr_result)]
+  print(val_arr)
   return (val_arr)
 
 }
