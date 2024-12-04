@@ -9,28 +9,8 @@
 # OUTPUT
 
 
-
-# ## Add a function that subsets the data to take only relevant columns
-# ## and reshape format
-# SubsetData <- function(X) {
-#   #library(reshape2)
-#
-#   # select relevant columns
-#   X_subset <- X[, c("MapDate", "County", "None", "D0", "D1", "D2", "D3", "D4")]
-#
-#   # reshape data to long format from wide format
-#   X_melt <- reshape2::melt(X_subset, id.vars = c("MapDate", "County"),
-#                  variable.name = "Drought_Level", value.name = "Percentage")
-#
-#   # change the type from MapDate to Date type
-#   X_melt$MapDate <- as.Date(as.character(X_melt$MapDate), format = "%Y%m%d")
-#
-#   return(X_melt)
-# }
-
-
-# Add a function that subsets the data to take only relevant columns and reshape format
-# Returns a data frame subsetted by the start and end date of MapDate
+# Add a function that subsets the data to take only relevant columns (MapDate, County, None, D0-D4) and reshape format
+# Returns a data frame subsetted by the start and end date of MapDate, and having additional column Week
 SubsetData <- function(X, start_date, end_date) {
   # Select relevant columns
   X_subset <- X[, c("MapDate", "County", "None", "D0", "D1", "D2", "D3", "D4")]
@@ -48,7 +28,7 @@ SubsetData <- function(X, start_date, end_date) {
   X_melt <- X_melt %>%
     mutate(Week = as.numeric(difftime(MapDate, min(MapDate), units = "weeks")))
 
-  return(X_melt)
+  return(X_melt) # Return dataframe
 }
 
 
