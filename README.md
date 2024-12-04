@@ -1,5 +1,5 @@
 ## Package `stheatmap`: Heatmap for Large Spatiotemporal Series 
-### Includes Drought Heatmap and ENSO Barplot SpatioTemporal Data Visualizations 
+### Includes Drought Heatmap and ENSO Barplot Spatiotemporal Data Visualizations 
 
 ### Radhika Kulkarni
 
@@ -23,26 +23,32 @@ Install the `stheatmap` package using:
 devtools::install_github("rrkulkarni108/stheatmap")
 ```
 
-## Using the package: 
-Overall there is a Drought heatmap function and a plotting function which contains two plots for ENSO data. 
+## Using The Package: 
+
+### Two Functions, Three Plots
+* `drought_main(drought_data, start_date, end_date)`
+  * Plot: Heatmap for Drought data
+* `enso_main(data, StartDate, EndDate)`
+   * Plot 1 : Time Series Line Plot for Overall Trend at a glance
+   * Plot 2:  ENSO barplot using Rolling Avg Smoother
 
 ### ENSO Data Usage:
-* You must use as input to enso_main() function- the datatable from [National Weather Service, Climate Prediction Center](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php).
+* You must use the datatable from [National Weather Service, Climate Prediction Center](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php) as input to the `enso_main()` function.
 
-* If link breaks, here is URL : https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
+* If the link breaks, here is the URL : https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
 
 ### Drought Heatmap Usage:
 
-* You must use as input to drought_main() function-the **cleaned** data from US Drought Monitor:
-* Download the data from from ([US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx)):
-    * Start and End date (specified by user)
-    * Area Type: State 
-    * Statistics category: Percent Area (the percentage of the area of that county which has the specified drought severity category)
-    * Statistics type: Cumulative (percentage of area adds up to 100%)
-    * Output format : CSV
-* Clean the data:
-     * Drop all columns except MapDate, None, D0, D1, D2, D3, D4, ValidStart
-     * Your data is now ready to be input
+You must use the ***cleaned*** data from US Drought Monitor as input to drought_main() function:
+   * Download the data from from ([US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx)):
+       * Start and End date (specified by user)
+       * Area Type: State 
+       * Statistics category: Percent Area (the percentage of the area of that county which has the specified drought severity category)
+       * Statistics type: Cumulative (percentage of area adds up to 100%)
+       * Output format : CSV
+   * Clean the data:
+        * Drop all columns except MapDate, None, D0, D1, D2, D3, D4, ValidStart
+        * Your data is now ready to be input
 
 ## Still need to complete:
 * Add the example for drought_main()
