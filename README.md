@@ -4,7 +4,9 @@
 ### Radhika Kulkarni
 
 
-#### When we have a large volume of data associated with geographic locations, taken over a period of time, it is often difficult to see the relevant patterns inherent in the data. In this package we will visualize California Drought data taken from US Drought Monitor ([US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx))  using a function that creates heatmaps generated using agglomerative hierarchical clustering with euclidean distance metric on the data. We also visualize [El Nino Southern Oscillation Data](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php) (ENSO) data using a rolling average smoother which captures the cyclical nature of ENSO (seasonal trends). These bigger picture visualizations can show us how the global and local variables interrelate with each other on the grand scale and can reveal some interesting associations in specific geographical areas or time points.  
+#### When we have a large volume of data associated with geographic locations, taken over a period of time, it is often difficult to see the relevant patterns inherent in the data. 
+In this package we will visualize California Drought data taken from [US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx)  using a function that creates heatmaps generated using agglomerative hierarchical clustering with euclidean distance metric. 
+We also visualize [El Nino Southern Oscillation Data](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php) (ENSO) data using a rolling average smoother which captures the cyclical nature of ENSO (seasonal trends). These bigger picture visualizations can show us how the global and local variables interrelate with each other on the grand scale and can reveal some interesting associations in specific geographical areas or time points.  
 
 Please see the vignette on the analysis and comparison of these two data on their specialized plots. The Drought data is subset to be spatially in California, and the El Nino/La Nina oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from 2001-2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state. 
 
@@ -33,7 +35,7 @@ Overall there is a Drought heatmap function and a plotting function which contai
 
 * You must use as input to drought_main() function-the **cleaned** data from US Drought Monitor:
 * Download the data from from ([US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx)):
-    * your specified start and end date
+    * Start and End date (specified by user)
     * Area Type: State 
     * Statistics category: Percent Area (the percentage of the area of that county which has the specified drought severity category)
     * Statistics type: Cumulative (percentage of area adds up to 100%)
