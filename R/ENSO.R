@@ -1,9 +1,4 @@
 
-#library(dplyr)
-#library(lubridate)
-#library(readxl)
-#library(ggplot2)
-
 
 ## Function takes in dataframe from any timepoint of this website (it is updated frequently) https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
 ## StartDate string value for season start date "year1-year2"
@@ -15,32 +10,32 @@ findDateSubset <- function(dataframe, StartDate, EndDate) {
 }
 #findDateSubset(enso_data, "2001-2002", "2020-2021") test that subset function works
 
+
 # Reshape the data into a long format
-
-#get the 3 month rolling averages of ONI to get avg ONI for individual month
-rollingAvg <- function(enso_arr) {
-  # Calculate 3-month rolling averages
-  val_arr <- c()
-  # Since my desired data range starts from January of 2001, I ignore the first five entries of 2000
-  # and start with the the 6th entry- which is the 3month average ONI for december 2000, january 2001 and february 2001.
-  # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
-  #print(enso_arr)
-  for (i in 6:length(enso_arr)) {
-    if (!is.na(enso_arr[i]) &&
-        !is.na(enso_arr[i + 1]) && !is.na(enso_arr[i + 2])) {
-      avg_val <- mean(enso_arr[i:(i + 2)])
-      val_arr <- c(val_arr, avg_val)
-    } else {
-      break
-    }
-  }
-  #print(val_arr)
-  val_arr <- round(val_arr, 2)
-
-
-  return (val_arr)
-
-}
+# #get the 3 month rolling averages of ONI to get avg ONI for individual month
+# rollingAvg <- function(enso_arr) {
+#   # Calculate 3-month rolling averages
+#   val_arr <- c()
+#   # Since my desired data range starts from January of 2001, I ignore the first five entries of 2000
+#   # and start with the the 6th entry- which is the 3month average ONI for december 2000, january 2001 and february 2001.
+#   # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
+#   #print(enso_arr)
+#   for (i in 6:length(enso_arr)) {
+#     if (!is.na(enso_arr[i]) &&
+#         !is.na(enso_arr[i + 1]) && !is.na(enso_arr[i + 2])) {
+#       avg_val <- mean(enso_arr[i:(i + 2)])
+#       val_arr <- c(val_arr, avg_val)
+#     } else {
+#       break
+#     }
+#   }
+#   #print(val_arr)
+#   val_arr <- round(val_arr, 2)
+#
+#
+#   return (val_arr)
+#
+# }
 
 
 
@@ -275,7 +270,7 @@ enso_main <- function(data, StartDate, EndDate) {
 
   # Determine the start season
   startSeason = "" #initialize endSeason
-  if (startMonth >= 1 && startMonth <= 6) {
+  if (startMonth >= 1 && startMonth <= 7) {
     startSeason <- paste(startYear - 1, startYear, sep = "-")
   } else {
     startSeason <- paste(startYear, startYear + 1, sep = "-")
@@ -283,28 +278,20 @@ enso_main <- function(data, StartDate, EndDate) {
 
   # Determine the end season
   endSeason = "" #initialize endSeason
-  if (endMonth >= 1 && endMonth <= 6) {
+  if (endMonth >= 1 && endMonth <= 5) {
     endSeason <- paste(endYear - 1, endYear, sep = "-")
   } else {
     endSeason <- paste(endYear, endYear + 1, sep = "-")
   }
+
   # Reshape data to long format
   enso <- findDateSubset(data, startSeason, endSeason) #takes only the rows (seasons) which user wants
-
-  # # Extract only the relevant columns (exclude first two)
-  # if ("EnsoType" %in% colnames(enso)) {
-  #   enso_subset <- enso %>% select(-c(EnsoType, Season))
-  # }
 
   # Remove season column so we can get array of just ONI values
   enso_subset <- enso %>% select(-c(Season))
   enso_arr <- as.vector(t(enso_subset)) #create array of ONI values
   val_arr <- rollingAvgTest(enso_arr, startMonth, endMonth) #get individual ONI average for each month
   #print(val_arr)
-  # # If we want the combination graph of both ENSO and Drought, this is true (gets called in combine_drought_enso() function in Heatmap_Functions.R)
-  # if (combine == TRUE){
-  #   val_arr <- rep(val_arr, each = 4)
-  # }
 
   # Extract years labels from Season column
   yrs <- c()
@@ -332,7 +319,7 @@ enso_main <- function(data, StartDate, EndDate) {
 
   # Plot 2- plot the data- main plot
   p <-  plotENSOSeries(colored_data)
-  return(list(q, p, val_arr))
+  return(list(q, p, val_arr = val_arr))
 }
 
 
@@ -396,7 +383,7 @@ sample_data <- data.frame(
 # StartDate <- "2001-07-01"
 # EndDate <- "2002-04-01"
 # StartDate <- "2001-01-01"
-# EndDate <- "2006-06-01"
+# EndDate <- "2021-06-01"
 # # Convert StartDate and EndDate to Date object
 # start_date <- as.Date(StartDate, format = "%Y-%m-%d")
 # end_date <- as.Date(EndDate, format = "%Y-%m-%d")
@@ -433,7 +420,7 @@ sample_data <- data.frame(
 # options(tibble.width = Inf)
 # # Reshape data to long format
 # enso <- findDateSubset(enso_data, startSeason, endSeason)
-# print(enso)
+# print(enso, n = 22)
 # enso_subset <- enso %>% select(-c(Season))
 # enso_arr <- as.vector(t(enso_subset)) #create array of ONI values
 # val_arr <- rollingAvgTest(enso_arr, startMonth, endMonth) #get individual ONI average for each month
