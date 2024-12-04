@@ -39,7 +39,7 @@ devtools::install_github("rrkulkarni108/stheatmap")
 
 ### Drought Heatmap Usage:
 
-You must use the ***cleaned*** data from US Drought Monitor as input to drought_main() function:
+You must use the ***cleaned*** data from US Drought Monitor as input to `drought_main()` function:
    * Download the data from from ([US Drought Monitor](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx)):
        * Start and End date (specified by user)
        * Area Type: State 
