@@ -19,64 +19,105 @@ findDateSubset <- function(dataframe, StartDate, EndDate) {
 }
 
 
+
+
+# Function that calculates 3-month rolling averages of ONI values for the user-specified month range
+###############################################################################################
+# Description of supplied parameters:
+# enso_arr   - A vector containing ONI values for each season (monthly values derived from rolling averages).
+# startMonth - An integer specifying the starting month (1 for January, 12 for December).
+# endMonth   - An integer specifying the ending month (1 for January, 12 for December).
+# OUTPUT
+# Returns a list of average ONI values (one for each month in the specified range), calculated using 3-month rolling averages.
+# The function ignores missing values (NAs) in the final result but keeps them temporarily during intermediate calculations.
+
+
+
 # Obtain the 3 month rolling averages of ONI to get avg ONI for individual month
 # For example: Suppose my desired data range starts from January of 2001, then I ignore the first five entries of 2000
 # and start with the the 6th entry- which is the 3 month average ONI for December 2000, January 2001 and february 2001.
 # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
 # If the desired data range ends for ex. in October 2001, then the last value in the val_array will be the average value for October 2001.
 
-## Returns a list of average ONI values, one for each month desired by user
 rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
   # Calculate 3-month rolling averages
   val_arr <- c() # Initialize vector
 
   # Loop through the array, starting from the first valid 3-month window (our rectangle of data always allows this from enso_main)
   for (i in 1:(length(enso_arr) - 2)) {
-    # Check that none of the values are NA in our average
+    # Check that none of the values are NA in the 3-month window
     if (!is.na(enso_arr[i]) &&
         !is.na(enso_arr[i + 1]) && !is.na(enso_arr[i + 2])) {
       avg_val <- mean(enso_arr[i:(i + 2)]) # Calculate mean
       val_arr <- c(val_arr, avg_val) # Add the mean to the existing vector
 
-      # Else check if there are any NAs in any of the 3 values, add NA to the list
+      # Else check if there are any NAs in any of the 3 values, append NA to the list
     } else if( is.na(enso_arr[i]) ||
               is.na(enso_arr[i + 1]) || is.na(enso_arr[i + 2])    ) {
       val_arr <-c(val_arr, NA) #Keep NAs for now, remove them from the list at the end
     }
       else{
-        break
+        break # Exit the loop if invalid data is encountered
     }
   }
 
+  # Initialize vectors for processing the start and final result
   val_arr_start <-  c() # Initialize start vector
   val_arr_result <- c() # Initialize result vector
   # Round the result to 2 decimal places for easy read of plot later
   val_arr <- round(val_arr, 2)
 
-  # 5 Cases of month combinations, since each season has overlap of months fom two years
+
+  # Handle edge cases based on overlapping months in seasons
+  # Start from the appropriate month range based on startMonth
+
+  # 5 Cases of month combinations, since each season has overlap of months from two years
   # One season has months 7-12 and also 1-6 in the same row
   # Months 6 and 7 are on two rows so we have special edge case for that situation
+
+
+  # Case 1: startMonth is between August (8) and December (12).
+  # The months August through December correspond to indices (startMonth - 7) in val_arr.
+  # For example, if startMonth = 9 (September), the starting index in val_arr will be 9 - 7 = 2.
+  # Extract all months starting from the calculated index to the end of val_arr.
   if (startMonth >= 8 && startMonth <= 12 ){
     val_arr_start <- val_arr[(startMonth-7):length(val_arr)]
   }
+
+  # Case 2: startMonth is between January (1) and July (7).
+  # These months are part of the overlapping seasons and correspond to indices (startMonth + 5) in val_arr.
+  # Extract all months starting from the calculated index to the end of val_arr.
   else if (startMonth < 8 && startMonth >= 1){
     val_arr_start <- val_arr[(startMonth+5):length(val_arr)]
   }
 
+  # Trim to the appropriate ending month based on endMonth
+
+  # Case 1: endMonth is between January (1) and May (5).
+  # Subtract (5 - endMonth) from the total length of val_arr_start to exclude months after endMonth.
   if (endMonth <= 5 && endMonth >= 1 ){
     val_arr_result <- val_arr_start[1:(length(val_arr_start) - (5-endMonth))]
   }
+
+  # Case 2: endMonth is between June (6) and July (7).
+  # Subtract (12 - (endMonth - 5)) from the total length of val_arr_start to account for the overlap.
+  # This adjusts the index to ensure months in the second half of the data (ex., July) are included correctly.
   else if (endMonth > 5 && endMonth <= 7){
     val_arr_result <- val_arr_start[1:(length(val_arr_start) - (12-(endMonth-5)))]
   }
+
+  # Case 3: endMonth is between August (8) and December (12).
+  # Subtract (endMonth - 7) from the total length of val_arr_start to include months up to endMonth.
+  # This accounts for months that fall in the second half of the season without additional overlap adjustment.
   else if (endMonth > 7 && endMonth <= 12){
     val_arr_result <- val_arr_start[1:(length(val_arr_start) - (endMonth-7))]
   }
+
   #print(val_arr_start)
-  # Remove the NAs from the list if there are any
+  # Remove the NAs from the list if there are any (i.e remove any NA values from the final result)
   val_arr <- val_arr_result[!is.na(val_arr_result)]
   #print(val_arr)
-  return (val_arr) # Returns a list of average oni values, one for each month desired by user
+  return (val_arr) # Returns a list of average ONI values, one for each month desired by user
 
 }
 
