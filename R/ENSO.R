@@ -1,11 +1,20 @@
+# Function that subsets the ENSO data by the specified start and end season
+###############################################################################################
+# Description of supplied parameters:
+# dataframe - DataFrame containing ENSO data with a "Season" column in the format "year1-year2" (e.g., "2001-2002", "2019-2020")
+# StartDate - string value of the format "year1-year2", specifying the starting season to subset.
+# EndDate - string value of the format "year1-year2", specifying the ending season to subset.
+# OUTPUT
+# Returns a subset of the dataframe where the "Season" column is between the specified StartDate and EndDate.
 
 
 ## Function takes in dataframe from any timepoint of this website (it is updated frequently) https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php
-## StartDate string value for season start date "year1-year2"
-## EndDate string value for season end date "year19-year20"
 findDateSubset <- function(dataframe, StartDate, EndDate) {
+  # Filter rows in the dataframe based on the "Season" column being within the specified range
   dataframe <- dataframe %>%
     filter(Season >= StartDate & Season <= EndDate)
+
+  # Return the filtered dataframe
   return(dataframe)
 }
 
