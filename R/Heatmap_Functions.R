@@ -1,5 +1,6 @@
 
 
+
 # Function that subsets the data and reformats to be appropriate input for other functions
 ###############################################################################################
 # Description of supplied parameters:
@@ -18,11 +19,16 @@ SubsetData <- function(X, start_date, end_date) {
   # Convert MapDate to Date type and filter by start_date and end_date
   X_subset <- X_subset %>%
     mutate(MapDate = as.Date(as.character(MapDate), format = "%Y%m%d")) %>%
-    filter(MapDate >= as.Date(start_date) & MapDate <= as.Date(end_date))
+    filter(MapDate >= as.Date(start_date) &
+             MapDate <= as.Date(end_date))
 
   # Reshape data to long format
-  X_melt <- reshape2::melt(X_subset, id.vars = c("MapDate", "County"),
-                           variable.name = "Drought_Level", value.name = "Percentage")
+  X_melt <- reshape2::melt(
+    X_subset,
+    id.vars = c("MapDate", "County"),
+    variable.name = "Drought_Level",
+    value.name = "Percentage"
+  )
 
   # Add a numeric Week column
   X_melt <- X_melt %>%
@@ -83,7 +89,11 @@ AssignClusters <- function(X, K = 6) {
   # Merge Drought_Level labels back to X_wide
   X_wide <- merge(X_wide, cluster_summary[, c("Cluster", "Drought_Level")], by = "Cluster")
 
-  return(list(X_wide = X_wide, hc = hc, cluster_summary = cluster_summary))
+  return(list(
+    X_wide = X_wide,
+    hc = hc,
+    cluster_summary = cluster_summary
+  ))
 
 }
 
@@ -127,23 +137,29 @@ CreateHeatmap <- function(X) {
 # palette - a vector of size 6 of color and hexcode for clusters, which can be specified by user. Default vector color scheme given.
 # OUTPUT - heatmap of the drought clusters with y-axis the weeks from 1 to Week n and X-axis the labels of all the counties in the state. Colored by palette scheme.
 
-PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
-                                    "2" = "#66BD63", #D0 severity
-                                    "3" = "yellow", #D1 severity
-                                    "4" = "orange", #D2 severity
-                                    "5" =  "red", #D3 severity
-                                    "6" =  "darkred" #D4 severity
-                                    )) {
+PlotHeat <- function(X,
+                     palette = c(
+                       "1" = "#008000",
+                       #None severity
+                       "2" = "#66BD63",
+                       #D0 severity
+                       "3" = "yellow",
+                       #D1 severity
+                       "4" = "orange",
+                       #D2 severity
+                       "5" =  "red",
+                       #D3 severity
+                       "6" =  "darkred" #D4 severity
+                     )) {
   # Plot the heatmap
   X$County <- stringr::str_remove(X$County, " County") #remove the word county since it takes a lot of space in X label
   #reorder weeks from least to greatest
-  X$Week <- as.integer(factor(X$Week, levels = (sort(unique(X$Week)))))#X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
+  X$Week <- as.integer(factor(X$Week, levels = (sort(unique(
+    X$Week
+  )))))#X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
   heatmap_plot <- ggplot(data = X, aes(x = County, y = Week, fill = Cluster)) +
     geom_tile() +
-    scale_fill_manual(
-      values = palette,
-      name = "Drought Severity"
-    ) +
+    scale_fill_manual(values = palette, name = "Drought Severity") +
     scale_y_reverse(breaks = seq(0, max(X$Week), by = 50)) +  # This flips the Y-axis
     theme_minimal() +
     theme(
@@ -151,14 +167,11 @@ PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
       axis.title.x = element_text(size = 12, face = "bold"),
       axis.title.y = element_text(size = 12, face = "bold"),
       legend.title = element_text(size = 12, face = "bold"),
-      axis.text.y = element_text(size = 8),  # set font size
+      axis.text.y = element_text(size = 8),
+      # set font size
       #plot.margin = margin(10, 10, 10, 20)  # make left margin bigger to fit  y-axis labels
     ) +
-    labs(
-      title = "Heatmap of County-Level Drought Severity",
-      x = "County",
-      y = "Week"
-    )
+    labs(title = "Heatmap of County-Level Drought Severity", x = "County", y = "Week")
 
   print(heatmap_plot)
 }
@@ -227,11 +240,15 @@ AssignClustersByWeek <- function(X, K = 6) {
   X_with_clusters <- X %>%
     left_join(X_wide[, c("County", "MapDate", "Cluster", "Drought_Level")], by = c("County", "MapDate"))
 
-  return(list(X_with_clusters = X_with_clusters, hc = hc, cluster_summary = cluster_summary))
+  return(list(
+    X_with_clusters = X_with_clusters,
+    hc = hc,
+    cluster_summary = cluster_summary
+  ))
 }
 
 
-#' Main function that visualizes drought data using heatmaps
+#' Main function that visualizes drought data using heatmaps, calls all other functions
 #'
 #' @param drought_data n by p matrix containing n data points to cluster.
 #' @param start_date string of format "yyyy-mm-dd", starting date of time series
@@ -272,7 +289,7 @@ AssignClustersByWeek <- function(X, K = 6) {
 #' drought_main(drought_data = drought_data_example,
 #' start_date = "2021-01-01", end_date = "2021-05-25")
 
-drought_main <- function(drought_data, start_date, end_date){
+drought_main <- function(drought_data, start_date, end_date) {
   drought_data_subset <- SubsetData(drought_data, start_date, end_date)  # Subset and reshape drought data
   drought_clusters <- AssignClustersByWeek(drought_data_subset, K = 6)  # Assign clusters
   drought_heatmap_data <- CreateHeatmap(drought_clusters$X_with_clusters)  # Prepare data for heatmap
@@ -282,6 +299,3 @@ drought_main <- function(drought_data, start_date, end_date){
 
   return(plot = drought_plot)
 }
-
-
-
