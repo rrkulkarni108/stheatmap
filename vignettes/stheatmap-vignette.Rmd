@@ -50,39 +50,6 @@ In this package demo we visualize California Drought data taken from US Drought 
   
   - **Plot 2**: ENSO barplot using Rolling Avg Smoother
 
-
-
-### Clustering Algorithm For Assigning Drought Severity
-
-Each county-week observation is represented as a \(p\)-dimensional vector:
-\[
-x_i = (x_{i1}, x_{i2}, \dots, x_{ip})
-\]
-where \(x_{il}\) is the average percentage for drought severity category \(l\) in observation \(i\).
-
-To measure dissimilarity between observations \(x_i\) and \(x_j\), we use the Euclidean distance:
-\[
-d(x_i, x_j) = \sqrt{\sum_{l=1}^p (x_{il} - x_{jl})^2}.
-\]
-
-For hierarchical clustering with average linkage, the distance between two clusters \(C_u\) and \(C_v\) is defined as the average of all pairwise distances between their members:
-\[
-D_{\text{avg}}(C_u, C_v) = \frac{1}{|C_u| \cdot |C_v|} \sum_{x_i \in C_u} \sum_{x_j \in C_v} d(x_i, x_j),
-\]
-where \(|C_u|\) and \(|C_v|\) are the sizes of clusters \(C_u\) and \(C_v\).
-
-The algorithm proceeds by:
-
-1. Initializing each observation as its own cluster.
-
-2. Merging the two closest clusters based on the above distance metric.
-
-3. Recomputing distances until \(K=6\) clusters remain.
-
-Cutting the resulting dendrogram at the height corresponding to \(K\) clusters provides the final grouping, and each cluster is assigned a representative drought category reflecting its predominant severity level composition.
-
-
-
 ### Installation 
 
 To begin, install and load `stheatmap`:
@@ -132,9 +99,43 @@ To generate the barplot for ENSO data, the user must obtain the data table from 
 
 **Note: The Data must retain the structure of the table on the website to be used as input to the package. If some data is unavailable (i.e. if current month is December, the rest of the months in the row for that Season will not be available yet), set the values in the csv/Excel file to NA.**
 
+
+
+### Clustering Algorithm For Assigning Drought Severity
+
+Each county-week observation is represented as a \(p\)-dimensional vector:
+\[
+x_i = (x_{i1}, x_{i2}, \dots, x_{ip})
+\]
+where \(x_{il}\) is the average percentage for drought severity category \(l\) in observation \(i\).
+
+To measure dissimilarity between observations \(x_i\) and \(x_j\), we use the Euclidean distance:
+\[
+d(x_i, x_j) = \sqrt{\sum_{l=1}^p (x_{il} - x_{jl})^2}.
+\]
+
+For hierarchical clustering with average linkage, the distance between two clusters \(C_u\) and \(C_v\) is defined as the average of all pairwise distances between their members:
+\[
+D_{\text{avg}}(C_u, C_v) = \frac{1}{|C_u| \cdot |C_v|} \sum_{x_i \in C_u} \sum_{x_j \in C_v} d(x_i, x_j),
+\]
+where \(|C_u|\) and \(|C_v|\) are the sizes of clusters \(C_u\) and \(C_v\).
+
+The algorithm proceeds by:
+
+1. Initializing each observation as its own cluster.
+
+2. Merging the two closest clusters based on the above distance metric.
+
+3. Recomputing distances until \(K=6\) clusters remain.
+
+Cutting the resulting dendrogram at the height corresponding to \(K\) clusters provides the final grouping, and each cluster is assigned a representative drought category reflecting its predominant severity level composition.
+
+
+
+
 ### Demo and Introduction to the Data  
 
-The Drought data is subset to be spatially in California, and the El Niño/La Nina oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from January 1, 2001 - June 1, 2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state.
+The Drought data is subset to be spatially in California, and the El Niño/La Niña oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from January 1, 2001 - June 1, 2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state.
 
 
 Both the Drought data and the ENSO data in this demo are available as in the Data folder as .Rda files, and they can be called through objects X and enso_data, respectively, in the R package. To use the datasets, simply load the datasets using the following commands:
@@ -187,7 +188,7 @@ The x-axis are the names of the 58 counties in California, and the y-axis are th
 
 ```{r plotheatmap, fig.width=8, fig.height=6, out.width='80%', out.height='80%'}
 # Plot the heatmap for drought
-out <- drought_main(X, start_date = "2001-01-01", end_date = "2021-06-01")
+out <- drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")
 
 
 ```
@@ -209,7 +210,7 @@ enso_main(enso_data,  "2001-01-01", "2021-06-01")[[1]]
 
 ```
 
-Below the 0 line indicates a La Nina event (cold water), and above the 0 line is an El Niño event (warm water). Note that there is a general trend of increasing severity of events from 2001 to 2016 for both El Niño and La Nina. This ties into the climate change theory that over recent history, climate events and phenomenon exhibit more extreme behaviors. 
+Below the 0 line indicates a La Niña event (cold water), and above the 0 line is an El Niño event (warm water). Note that there is a general trend of increasing severity of events from 2001 to 2016 for both El Niño and La Niña. This ties into the climate change theory that over recent history, climate events and phenomenon exhibit more extreme behaviors. 
 
 
 
@@ -227,6 +228,8 @@ enso_main(enso_data,  "2001-01-01", "2021-06-01")[[2]]
 ```
 
 
+From 2001 through roughly 2003, the plot shows mostly neutral conditions with brief periods of weak El Niño (light red) and neutral (gray) anomalies, indicating only minor departures from average sea surface temperatures in the Niño 3.4 region. In the years 2004–2007, the pattern continues to be mixed but generally subdued, with episodes shifting between weak El Niño (pale reds) and occasional weak La Niña (lighter blues), without any intensely strong events. By 2007–2008, however, a more pronounced La Niña emerges (darker blues), signaling notably cooler ocean temperatures and a stronger ENSO signal. The period from late 2009 into early 2010 reverses course with a moderate El Niño (medium reds), which then transitions again to a series of strong La Niña conditions spanning roughly 2010–2012. Following a relatively neutral phase in the early 2010s, a prominent peak appears in 2015–2016 with a very strong El Niño event (deep reds), one of the most significant warm anomalies in the twenty year period. After this peak, ENSO conditions fluctuate between neutral and weaker La Niña phases (2016–2021), with fewer sustained or extreme departures by the end of the series.
 
+When comparing these ENSO fluctuations to California’s drought timeline, the connection is not immediate. For example, the intense 2015–2016 El Niño did not immediately end the state’s prolonged drought. Instead, there was a lag of several months before increased precipitation was observed. Similarly, cooler La Niña events generally are associated with drier conditions, but this often happens in the previous wet season, rather than aligning perfectly with the timing of the ocean temperature anomaly. So, while the ENSO phases set a broad climate context, with El Niño often being a predictor of wet winters and La Niña toward drier ones, they do not guarantee immediate changes in California’s drought status. Instead, the influence is visible after a lag effect, since local atmospheric patterns, precipitation cycles, and regional factors translate oceanic anomalies into tangible climatic effects on the ground.
 
 
