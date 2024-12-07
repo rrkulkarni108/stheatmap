@@ -38,3 +38,7 @@ Imports:
     reshape2, 
     magrittr, 
     stringr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
