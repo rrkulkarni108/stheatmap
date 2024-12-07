@@ -2,7 +2,7 @@
 % Please edit documentation in R/Heatmap_Functions.R
 \name{drought_main}
 \alias{drought_main}
-\title{Main function that visualizes drought data using heatmaps}
+\title{Main function that visualizes drought data using heatmaps, calls all other functions}
 \usage{
 drought_main(drought_data, start_date, end_date)
 }
@@ -17,7 +17,7 @@ drought_main(drought_data, start_date, end_date)
 a heatmap plot of the state's county names on x axis, week time series on y axis and heatmap colored by drought severity category
 }
 \description{
-Main function that visualizes drought data using heatmaps
+Main function that visualizes drought data using heatmaps, calls all other functions
 }
 \examples{
 # Give example
