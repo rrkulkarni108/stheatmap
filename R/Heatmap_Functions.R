@@ -135,17 +135,16 @@ PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
                                     "6" =  "darkred" #D4 severity
                                     )) {
   # Plot the heatmap
-  #library(stringr)
   X$County <- stringr::str_remove(X$County, " County") #remove the word county since it takes a lot of space in X label
   #reorder weeks from least to greatest
-  X$Week <- as.integer(factor(X$Week, levels = rev(sort(unique(X$Week)))))#X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
-  #print(X$Week)
+  X$Week <- as.integer(factor(X$Week, levels = (sort(unique(X$Week)))))#X$Week <- factor(X$Week, levels = rev(sort(unique(X$Week))))
   heatmap_plot <- ggplot(data = X, aes(x = County, y = Week, fill = Cluster)) +
     geom_tile() +
     scale_fill_manual(
       values = palette,
       name = "Drought Severity"
     ) +
+    scale_y_reverse(breaks = seq(0, max(X$Week), by = 50)) +  # This flips the Y-axis
     theme_minimal() +
     theme(
       axis.text.x = element_text(angle = 90, hjust = 1),
@@ -253,4 +252,5 @@ drought_main <- function(drought_data, start_date, end_date){
 
   return(plot = drought_plot)
 }
+
 
