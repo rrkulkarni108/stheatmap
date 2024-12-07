@@ -35,8 +35,61 @@ When we have a large volume of data associated with geographic locations, taken 
 In this package demo we visualize California Drought data taken from US Drought Monitor using a function that creates heatmaps generated using agglomerative hierarchical clustering with euclidean distance metric. We also visualize El Nino Southern Oscillation Data (ENSO) data using a rolling average smoother which captures the cyclical nature of ENSO (seasonal trends). These bigger picture visualizations can show us how the global and local variables interrelate with each other on the grand scale and can reveal some interesting associations in specific geographical areas or time points.
 
 
+### Installation 
 
-### Introduction to the Data and Demo
+To begin, install and load `stheatmap` and `tidyverse`:
+
+```{r, warning=FALSE}
+library(stheatmap)
+library(tidyverse)
+```
+
+
+
+### Data Download
+
+##### Drought Data
+
+To generate the heatmap for Drought data, the user must obtain the data from the **US Drought Monitor** at [US Drought Monitor - Comprehensive Statistics](https://droughtmonitor.unl.edu/DmData/DataDownload/ComprehensiveStatistics.aspx).
+
+#### Input Requirements for the `drought_main()` Function
+
+1. **Download the Data**:
+   - **Source**: US Drought Monitor
+   - Specify the following parameters:
+     - **Start and End Date**: Chosen by the user.
+     - **Area Type**: State.
+     - **Statistics Category**: Percent Area (percentage of the area of that county with the specified drought severity category).
+     - **Statistics Type**: Cumulative (percentage of area adds up to 100%).
+     - **Output Format**: CSV.
+
+2. **Clean the Data**:
+   - Retain only the following columns:
+     - `MapDate`
+     - `None`
+     - `D0`
+     - `D1`
+     - `D2`
+     - `D3`
+     - `D4`
+     - `ValidStart`.
+
+```{r}
+# Example code for cleaning data
+clean_drought_data <- function(drought_data) {
+  # Retain only the relevant columns
+  drought_data <- drought_data %>%
+    select(MapDate, None, D0, D1, D2, D3, D4, ValidStart)
+  
+  return(drought_data)
+}
+```
+
+
+##### ENSO Data
+
+
+### Demo and Introduction to the Data  
 
 The Drought data is subset to be spatially in California, and the El Nino/La Nina oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from January 1, 2001 - June 1, 2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state.
 
@@ -47,20 +100,37 @@ Both the Drought data and the ENSO data in this demo are available as in the Dat
 ```{r loaddata}
 load(system.file("Data/ENSO.Rda", package = "stheatmap"))
 load(system.file("Data/Drought.Rda", package = "stheatmap"))
-#load("Data/ENSO.Rda")
-#load("Data/Drought.Rda")
+
 ```
 
 
 
-#### Drought Data:
+#### California Drought Data, Jan 2001 - Jun 2021 (1066 weeks):
 
 Let us have a look at the desired data structure to be input in the package: 
 
 ```{r headdrought}
 # View the first few entries of the Drought dataset
 head(X)
+dim(X)
 ```
 
+There are `r dim(X)[1]` records of drought in California in the time range of 1066 weeks, and 58 counties (58 x 1066). 
+
+
+##### Plotting the Heatmap for the Drought Data:
+
+Below we plot the heatmap for drought data taken over the range of Jan 2001 - June 2021. 
+The x-axis are the names of the 58 counties in California, and the y-axis are the weeks over which the data was taken, from 1 to 1066. The color bar to the right denotes the severity of the drought; darkest red means most severe drought (category D4), while darkest green color means no drought (category None). 
+
+```{r plotheatmap, fig.width=8, fig.height=6, out.width='80%', out.height='80%'}
+# Plot the heatmap for drought, second index is the desired plot
+plot_items <- drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")[1]
+#length(plot_items)
+plot_items[1]
+```
+
+
+From the plot above we can observe that in weeks 0 - 
 
 
