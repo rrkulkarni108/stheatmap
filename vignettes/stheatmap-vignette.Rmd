@@ -162,13 +162,13 @@ The x-axis are the names of the 58 counties in California, and the y-axis are th
 
 ```{r plotheatmap, fig.width=8, fig.height=6, out.width='80%', out.height='80%'}
 # Plot the heatmap for drought
-out <- drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")
+out <- drought_main(X, start_date = "2001-01-01", end_date = "2021-06-01")
 
 
 ```
 
 
-From the plot above we can observe that in weeks 0 - 
+From the plot above we can observe that in weeks 0 - 300 
 
 ##### Plotting the Time Series Plot for the ENSO Data:
 
