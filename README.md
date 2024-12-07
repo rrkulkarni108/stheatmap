@@ -34,9 +34,25 @@ devtools::install_github("rrkulkarni108/stheatmap", build_vignettes = TRUE)
 ### Two Functions, Three Plots
 * `drought_main(drought_data, start_date, end_date)`
   * Plot: Heatmap for Drought data
+  * **Example** usage:
+    ```
+    # load dataset that comes with package
+    load(Data/Drought.rda)
+
+    # user is interested to subset drought data from January 1, 2021 to January 1, 2006
+    drought_main(Drought, start_date = "2001-01-01", end_date = "2006-01-01")
+    ```
 * `enso_main(data, StartDate, EndDate)`
    * Plot 1 : Time Series Line Plot for Overall Trend at a glance
    * Plot 2:  ENSO barplot using Rolling Avg Smoother
+   *   **Example** usage:
+        ```
+        # load dataset that comes with package
+        load(Data/ENSO.rda)
+    
+        # user is interested to subset ENSO data from January 1, 2021 to January 1, 2006
+        enso_main(ENSO, StartDate = "2001-01-01", EndDate = "2006-01-01")
+        ```
 
 ### ENSO Data Usage:
 * You must use the datatable from [National Weather Service, Climate Prediction Center](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php) as input to the `enso_main()` function.
