@@ -37,11 +37,10 @@ In this package demo we visualize California Drought data taken from US Drought 
 
 ### Installation 
 
-To begin, install and load `stheatmap` and `tidyverse`:
+To begin, install and load `stheatmap`:
 
 ```{r, warning=FALSE}
 library(stheatmap)
-library(tidyverse)
 ```
 
 
@@ -98,8 +97,8 @@ Both the Drought data and the ENSO data in this demo are available as in the Dat
 
 
 ```{r loaddata}
-load(system.file("Data/ENSO.Rda", package = "stheatmap"))
-load(system.file("Data/Drought.Rda", package = "stheatmap"))
+load(system.file("data/ENSO.Rda", package = "stheatmap"))
+load(system.file("data/Drought.Rda", package = "stheatmap"))
 
 ```
 
@@ -125,9 +124,8 @@ The x-axis are the names of the 58 counties in California, and the y-axis are th
 
 ```{r plotheatmap, fig.width=8, fig.height=6, out.width='80%', out.height='80%'}
 # Plot the heatmap for drought, second index is the desired plot
-plot_items <- drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")[1]
-#length(plot_items)
-plot_items[1]
+drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")[1][1]
+
 ```
 
 
