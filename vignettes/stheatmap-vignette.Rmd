@@ -22,7 +22,7 @@ library(stheatmap)
 
 ## Introduction
 
-Stheatmap is a package that specifically creates visualizations for two sources of spatiotemporal data. The first source, which is data on the prevalence of Drought, is used in the package to visualize Percentage of County Area experiencing a certain level of severity of drought in a particular Geographic Region using a heatmap. The second source, data on the Oceanic Nino values of the El Nino Southern Oscillation (ENSO) effect , is utilized by the package to create two plots: one a general smoothed trend curve, and the other a detailed barplot of the ENSO events and corresponding severities. 
+Stheatmap is a package that specifically creates visualizations for two sources of spatiotemporal data. The first source, which is data on the prevalence of Drought, is used in the package to visualize Percentage of County Area experiencing a certain level of severity of drought in a particular Geographic Region using a heatmap. The second source, data on the Oceanic Niño (ONI) values of the El Niño Southern Oscillation (ENSO) effect, is utilized by the package to create two plots: one a general smoothed trend curve, and the other a detailed barplot of the ENSO events and corresponding severities. 
 
 The author and maintainer of stheatmap R package is Radhika Kulkarni. This
 vignette describes the usage of stheatmap in R.
@@ -32,7 +32,23 @@ vignette describes the usage of stheatmap in R.
 
 When we have a large volume of data associated with geographic locations, taken over a period of time, it is often difficult to see the relevant patterns inherent in the data.
 
-In this package demo we visualize California Drought data taken from US Drought Monitor using a function that creates heatmaps generated using agglomerative hierarchical clustering with euclidean distance metric. We also visualize El Nino Southern Oscillation Data (ENSO) data using a rolling average smoother which captures the cyclical nature of ENSO (seasonal trends). These bigger picture visualizations can show us how the global and local variables interrelate with each other on the grand scale and can reveal some interesting associations in specific geographical areas or time points.
+In this package demo we visualize California Drought data taken from US Drought Monitor using a function that creates heatmaps generated using agglomerative hierarchical clustering with euclidean distance metric. We also visualize El Niño Southern Oscillation Data (ENSO) data using a rolling average smoother which captures the cyclical nature of ENSO (seasonal trends). These bigger picture visualizations can show us how the global and local variables interrelate with each other on the grand scale and can reveal some interesting associations in specific geographical areas or time points.
+
+
+### Functions in the Package 
+
+#### Two Functions, Three Plots
+
+1. **Drought Function**: 
+  - `drought_main(drought_data, start_date, end_date)`
+  - **Plot**: Heatmap for Drought data
+  
+2. **ENSO Function**: 
+  - `enso_main(data, StartDate, EndDate)`
+  
+  - **Plot 1** : Time Series Line Plot for Overall Trend at a glance
+  
+  - **Plot 2**: ENSO barplot using Rolling Avg Smoother
 
 
 ### Installation 
@@ -87,10 +103,13 @@ clean_drought_data <- function(drought_data) {
 
 ##### ENSO Data
 
+To generate the barplot for ENSO data, the user must obtain the data table from the **National Weather Service, Climate Prediction Center** at [Cold & Warm Episodes by Season](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php).This table can be converted to .csv or pasted in an Excel file to be used. 
+
+**Note: The Data must retain the structure of the table on the website to be used as input to the package. If some data is unavailable (i.e. if current month is December, the rest of the months in the row for that Season will not be available yet), set the values in the csv/Excel file to NA.**
 
 ### Demo and Introduction to the Data  
 
-The Drought data is subset to be spatially in California, and the El Nino/La Nina oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from January 1, 2001 - June 1, 2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state.
+The Drought data is subset to be spatially in California, and the El Niño/La Nina oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from January 1, 2001 - June 1, 2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state.
 
 
 Both the Drought data and the ENSO data in this demo are available as in the Data folder as .Rda files, and they can be called through objects X and enso_data, respectively, in the R package. To use the datasets, simply load the datasets using the following commands:
@@ -106,16 +125,35 @@ load(system.file("data/Drought.Rda", package = "stheatmap"))
 
 #### California Drought Data, Jan 2001 - Jun 2021 (1066 weeks):
 
-Let us have a look at the desired data structure to be input in the package: 
+Let us have a look at the desired data structure to function `drought_main()` in the package: 
 
 ```{r headdrought}
 # View the first few entries of the Drought dataset
 head(X)
+
+#get number of rows and columns
 dim(X)
 ```
 
 There are `r dim(X)[1]` records of drought in California in the time range of 1066 weeks, and 58 counties (58 x 1066). 
 
+
+#### El Niño Southern Oscillation Effect Data, Jan 2001 - Jun 2021 (245 months):
+
+Let us have a look at the desired data structure to function `enso_main()` in the package: 
+
+```{r headenso}
+# View the first few entries of the ENSO dataset
+head(enso_data)
+
+# View the last few entries of the ENSO dataset, including NAs
+tail(enso_data)
+
+#get number of rows and columns
+dim(enso_data)
+```
+
+There are `r dim(enso_data)[1]` Seasons from 1950-1951 until 2021-2022. 
 
 ##### Plotting the Heatmap for the Drought Data:
 
@@ -123,12 +161,47 @@ Below we plot the heatmap for drought data taken over the range of Jan 2001 - Ju
 The x-axis are the names of the 58 counties in California, and the y-axis are the weeks over which the data was taken, from 1 to 1066. The color bar to the right denotes the severity of the drought; darkest red means most severe drought (category D4), while darkest green color means no drought (category None). 
 
 ```{r plotheatmap, fig.width=8, fig.height=6, out.width='80%', out.height='80%'}
-# Plot the heatmap for drought, second index is the desired plot
-drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")[1][1]
+# Plot the heatmap for drought
+out <- drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")
+
 
 ```
 
 
 From the plot above we can observe that in weeks 0 - 
+
+##### Plotting the Time Series Plot for the ENSO Data:
+
+Our first plot from `enso_main()` is a time series plot of the Oceanic Niño values. This plot gives the researcher the overall trend of the severity of ENSO events but not the type or named category of the severity. 
+
+Here we plot the series for ENSO data taken over the range of Jan 2001 - June 2021. 
+The x-axis are the years-months over which the data was taken, from 2001-01 to 2021-06, and the y-axis is the monthly oceanic Niño index value average (smoothed data using three month rolling average). 
+
+```{r plotensotimeseries, fig.width=8, fig.height=8, out.width='80%', out.height='80%'}
+# Plot the barplot for enso, first index is the desired plot
+enso_main(enso_data,  "2001-01-01", "2021-06-01")[[1]]
+
+
+```
+
+Below the 0 line indicates a La Nina event (cold water), and above the 0 line is an El Niño event (warm water). Note that there is a general trend of increasing severity of events from 2001 to 2016 for both El Niño and La Nina. This ties into the climate change theory that over recent history, climate events and phenomenon exhibit more extreme behaviors. 
+
+
+
+##### Plotting the Barplot for the ENSO Data:
+
+Below we plot the barplot for ENSO data taken over the range of Jan 2001 - June 2021. 
+The x-axis is the monthly Oceanic Niño index value average (smoothed data using three month rolling average), and the y-axis are the years-months over which the data was taken, from 2001-01 to 2021-06. The legend to the right denotes the severity of the ENSO event. Red color indicates warm water events in the Niño 3.4 region, and blue color indicates cold water events in the region. 
+
+
+```{r plotensobar, fig.width=8, fig.height=20, out.width='80%', out.height='80%'}
+# Plot the barplot for enso, second index is the desired plot
+enso_main(enso_data,  "2001-01-01", "2021-06-01")[[2]]
+
+
+```
+
+
+
 
 
