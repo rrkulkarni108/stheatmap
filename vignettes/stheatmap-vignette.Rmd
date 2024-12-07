@@ -138,7 +138,7 @@ Cutting the resulting dendrogram at the height corresponding to \(K\) clusters p
 The Drought data is subset to be spatially in California, and the El Niño/La Niña oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from January 1, 2001 - June 1, 2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state.
 
 
-Both the Drought data and the ENSO data in this demo are available as in the Data folder as .Rda files, and they can be called through objects X and enso_data, respectively, in the R package. To use the datasets, simply load the datasets using the following commands:
+Both the Drought data and the ENSO data in this demo are available as in the Data folder as .Rda files, and they can be called through objects Drought and ENSO, respectively, in the R package. To use the datasets, simply load the datasets using the following commands:
 
 
 ```{r loaddata}
@@ -155,13 +155,13 @@ Let us have a look at the desired data structure to function `drought_main()` in
 
 ```{r headdrought}
 # View the first few entries of the Drought dataset
-head(X)
+head(Drought)
 
 #get number of rows and columns
-dim(X)
+dim(Drought)
 ```
 
-There are `r dim(X)[1]` records of drought in California in the time range of 1066 weeks, and 58 counties (58 x 1066). 
+There are `r dim(Drought)[1]` records of drought in California in the time range of 1066 weeks, and 58 counties (58 x 1066). 
 
 
 #### El Niño Southern Oscillation Effect Data, Jan 2001 - Jun 2021 (245 months):
@@ -170,16 +170,16 @@ Let us have a look at the desired data structure to function `enso_main()` in th
 
 ```{r headenso}
 # View the first few entries of the ENSO dataset
-head(enso_data)
+head(ENSO)
 
 # View the last few entries of the ENSO dataset, including NAs
-tail(enso_data)
+tail(ENSO)
 
 #get number of rows and columns
-dim(enso_data)
+dim(ENSO)
 ```
 
-There are `r dim(enso_data)[1]` Seasons from 1950-1951 until 2021-2022. 
+There are `r dim(ENSO)[1]` Seasons from 1950-1951 until 2021-2022. 
 
 ##### Plotting the Heatmap for the Drought Data:
 
@@ -188,7 +188,7 @@ The x-axis are the names of the 58 counties in California, and the y-axis are th
 
 ```{r plotheatmap, fig.width=8, fig.height=6, out.width='80%', out.height='80%'}
 # Plot the heatmap for drought
-out <- drought_main(X, start_date = "2001-01-01", end_date = "2006-06-01")
+out <- drought_main(Drought, start_date = "2001-01-01", end_date = "2006-06-01")
 
 
 ```
@@ -205,7 +205,7 @@ The x-axis are the years-months over which the data was taken, from 2001-01 to 2
 
 ```{r plotensotimeseries, fig.width=8, fig.height=8, out.width='80%', out.height='80%'}
 # Plot the barplot for enso, first index is the desired plot
-enso_main(enso_data,  "2001-01-01", "2021-06-01")[[1]]
+enso_main(ENSO,  "2001-01-01", "2021-06-01")[[1]]
 
 
 ```
@@ -222,7 +222,7 @@ The x-axis is the monthly Oceanic Niño index value average (smoothed data using
 
 ```{r plotensobar, fig.width=8, fig.height=20, out.width='80%', out.height='80%'}
 # Plot the barplot for enso, second index is the desired plot
-enso_main(enso_data,  "2001-01-01", "2021-06-01")[[2]]
+enso_main(ENSO,  "2001-01-01", "2021-06-01")[[2]]
 
 
 ```
