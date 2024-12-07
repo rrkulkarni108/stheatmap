@@ -161,7 +161,7 @@ PlotHeat <- function(X, palette = c("1" = "#008000", #None severity
       y = "Week"
     )
 
-  print(heatmap_plot)
+  return(heatmap_plot)
 }
 
 
@@ -251,7 +251,7 @@ drought_main <- function(drought_data, start_date, end_date){
   # Generate the drought heatmap plot
   drought_plot <- PlotHeat(drought_heatmap_data)
 
-  return(list(drought_plot, drought_clusters$X_with_clusters)) # Second item is returned so it can be used in the combine function
+  return(drought_plot)
 }
 
 #
