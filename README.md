@@ -50,9 +50,9 @@ You must use the ***cleaned*** data from US Drought Monitor as input to `drought
         * Drop all columns except MapDate, None, D0, D1, D2, D3, D4, ValidStart
         * Your data is now ready to be input
 
-## Still need to complete:
-* Add the example for drought_main()
-* Need to ensure R style is correct across all files
-* Make vignette on my sample dataset
+## Vignette
+For more information on how to use the package and analyses, see the vignette ([here](https://github.com/rrkulkarni108/stheatmap/blob/master/vignettes/stheatmap-vignette.Rmd)).
+
+
 
 
