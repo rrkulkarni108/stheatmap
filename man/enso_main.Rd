@@ -2,7 +2,7 @@
 % Please edit documentation in R/ENSO.R
 \name{enso_main}
 \alias{enso_main}
-\title{Functions that create a ENSO Time Series Plot of ONI values}
+\title{Function that creates a ENSO Time Series Plot of ONI values}
 \usage{
 enso_main(data, StartDate, EndDate)
 }
@@ -17,7 +17,7 @@ enso_main(data, StartDate, EndDate)
 p Main package plot which is a barplot visualization of the ENSO intensities by month
 }
 \description{
-Functions that create a ENSO Time Series Plot of ONI values
+Function that creates a ENSO Time Series Plot of ONI values
 }
 \examples{
 # Give example
