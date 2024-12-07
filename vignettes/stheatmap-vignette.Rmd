@@ -1,5 +1,6 @@
 ---
 title: "Stheatmap Vignette"
+author: "Radhika Kulkarni"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Stheatmap Vignette}
@@ -14,6 +15,52 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, include = FALSE}
 library(stheatmap)
 ```
+
+
+## Introduction
+
+Stheatmap is a package that specifically creates visualizations for two sources of spatiotemporal data. The first source, which is data on the prevalence of Drought, is used in the package to visualize Percentage of County Area experiencing a certain level of severity of drought in a particular Geographic Region using a heatmap. The second source, data on the Oceanic Nino values of the El Nino Southern Oscillation (ENSO) effect , is utilized by the package to create two plots: one a general smoothed trend curve, and the other a detailed barplot of the ENSO events and corresponding severities. 
+
+The author and maintainer of stheatmap R package is Radhika Kulkarni. This
+vignette describes the usage of stheatmap in R.
+
+
+### Motivation for `stheatmap`
+
+When we have a large volume of data associated with geographic locations, taken over a period of time, it is often difficult to see the relevant patterns inherent in the data.
+
+In this package demo we visualize California Drought data taken from US Drought Monitor using a function that creates heatmaps generated using agglomerative hierarchical clustering with euclidean distance metric. We also visualize El Nino Southern Oscillation Data (ENSO) data using a rolling average smoother which captures the cyclical nature of ENSO (seasonal trends). These bigger picture visualizations can show us how the global and local variables interrelate with each other on the grand scale and can reveal some interesting associations in specific geographical areas or time points.
+
+
+
+### Introduction to the Data and Demo
+
+The Drought data is subset to be spatially in California, and the El Nino/La Nina oscillation cycle values are a global weather pattern. To investigate how these global and local weather patterns are associated, time series will be over the time period of 20 years, from January 1, 2001 - June 1, 2021. If wishing to visually compare another state's drought patterns with the ENSO effect, you may download the data for that specific state.
+
+
+Both the Drought data and the ENSO data in this demo are available as in the Data folder as .Rda files, and they can be called through objects X and enso_data, respectively, in the R package. To use the datasets, simply load the datasets using the following commands:
+
+
+```{r loaddata}
+load(system.file("Data/ENSO.Rda", package = "stheatmap"))
+load(system.file("Data/Drought.Rda", package = "stheatmap"))
+#load("Data/ENSO.Rda")
+#load("Data/Drought.Rda")
+```
+
+
+
+#### Drought Data:
+
+Let us have a look at the desired data structure to be input in the package: 
+
+```{r headdrought}
+# View the first few entries of the Drought dataset
+head(X)
+```
+
+
+
