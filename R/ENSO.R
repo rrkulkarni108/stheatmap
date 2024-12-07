@@ -39,7 +39,7 @@ findDateSubset <- function(dataframe, StartDate, EndDate) {
 # I take the rolling average of the three entries which contain the month January: NDJ, DJF, JFM to get an ONI value for January 2001
 # If the desired data range ends for ex. in October 2001, then the last value in the val_array will be the average value for October 2001.
 
-rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
+rollingAvgTest <- function(enso_arr, startMonth, endMonth) {
   # Calculate 3-month rolling averages
   val_arr <- c() # Initialize vector
 
@@ -52,12 +52,13 @@ rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
       val_arr <- c(val_arr, avg_val) # Add the mean to the existing vector
 
       # Else check if there are any NAs in any of the 3 values, append NA to the list
-    } else if( is.na(enso_arr[i]) ||
-              is.na(enso_arr[i + 1]) || is.na(enso_arr[i + 2])    ) {
-      val_arr <-c(val_arr, NA) #Keep NAs for now, remove them from the list at the end
+    } else if (is.na(enso_arr[i]) ||
+               is.na(enso_arr[i + 1]) ||
+               is.na(enso_arr[i + 2])) {
+      val_arr <- c(val_arr, NA) #Keep NAs for now, remove them from the list at the end
     }
-      else{
-        break # Exit the loop if invalid data is encountered
+    else{
+      break # Exit the loop if invalid data is encountered
     }
   }
 
@@ -80,37 +81,38 @@ rollingAvgTest <- function(enso_arr, startMonth, endMonth ) {
   # The months August through December correspond to indices (startMonth - 7) in val_arr.
   # For example, if startMonth = 9 (September), the starting index in val_arr will be 9 - 7 = 2.
   # Extract all months starting from the calculated index to the end of val_arr.
-  if (startMonth >= 8 && startMonth <= 12 ){
-    val_arr_start <- val_arr[(startMonth-7):length(val_arr)]
+  if (startMonth >= 8 && startMonth <= 12) {
+    val_arr_start <- val_arr[(startMonth - 7):length(val_arr)]
   }
 
   # Case 2: startMonth is between January (1) and July (7).
   # These months are part of the overlapping seasons and correspond to indices (startMonth + 5) in val_arr.
   # Extract all months starting from the calculated index to the end of val_arr.
-  else if (startMonth < 8 && startMonth >= 1){
-    val_arr_start <- val_arr[(startMonth+5):length(val_arr)]
+  else if (startMonth < 8 && startMonth >= 1) {
+    val_arr_start <- val_arr[(startMonth + 5):length(val_arr)]
   }
 
   # Trim to the appropriate ending month based on endMonth
 
   # Case 1: endMonth is between January (1) and May (5).
   # Subtract (5 - endMonth) from the total length of val_arr_start to exclude months after endMonth.
-  if (endMonth <= 5 && endMonth >= 1 ){
-    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (5-endMonth))]
+  if (endMonth <= 5 && endMonth >= 1) {
+    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (5 - endMonth))]
   }
 
   # Case 2: endMonth is between June (6) and July (7).
   # Subtract (12 - (endMonth - 5)) from the total length of val_arr_start to account for the overlap.
   # This adjusts the index to ensure months in the second half of the data (ex., July) are included correctly.
-  else if (endMonth > 5 && endMonth <= 7){
-    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (12-(endMonth-5)))]
+  else if (endMonth > 5 && endMonth <= 7) {
+    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (12 - (endMonth -
+                                                                        5)))]
   }
 
   # Case 3: endMonth is between August (8) and December (12).
   # Subtract (endMonth - 7) from the total length of val_arr_start to include months up to endMonth.
   # This accounts for months that fall in the second half of the season without additional overlap adjustment.
-  else if (endMonth > 7 && endMonth <= 12){
-    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (endMonth-7))]
+  else if (endMonth > 7 && endMonth <= 12) {
+    val_arr_result <- val_arr_start[1:(length(val_arr_start) - (endMonth - 7))]
   }
 
   #print(val_arr_start)
@@ -274,12 +276,11 @@ plotENSOSeries <- function(data) {
 
 # Main function which calls the subfunctions
 enso_main <- function(data, StartDate, EndDate) {
-
   # Convert StartDate and EndDate to Date object
   start_date <- as.Date(StartDate, format = "%Y-%m-%d")
   end_date <- as.Date(EndDate, format = "%Y-%m-%d")
 
-  if(start_date > end_date){
+  if (start_date > end_date) {
     stop("StartDate must be before EndDate. Please check your values.")
   }
 
@@ -345,9 +346,3 @@ enso_main <- function(data, StartDate, EndDate) {
 
 
 ###############################################################################
-
-
-
-
-
-
