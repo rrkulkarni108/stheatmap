@@ -23,6 +23,12 @@ Install the `stheatmap` package using:
 devtools::install_github("rrkulkarni108/stheatmap")
 ```
 
+Build the Vignette:
+
+```html
+devtools::install_github("rrkulkarni108/stheatmap", build_vignettes = TRUE)
+```
+
 ## Using The Package: 
 
 ### Two Functions, Three Plots
