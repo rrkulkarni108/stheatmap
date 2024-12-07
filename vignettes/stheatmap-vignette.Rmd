@@ -72,8 +72,11 @@ D_{\text{avg}}(C_u, C_v) = \frac{1}{|C_u| \cdot |C_v|} \sum_{x_i \in C_u} \sum_{
 where \(|C_u|\) and \(|C_v|\) are the sizes of clusters \(C_u\) and \(C_v\).
 
 The algorithm proceeds by:
+
 1. Initializing each observation as its own cluster.
+
 2. Merging the two closest clusters based on the above distance metric.
+
 3. Recomputing distances until \(K=6\) clusters remain.
 
 Cutting the resulting dendrogram at the height corresponding to \(K\) clusters provides the final grouping, and each cluster is assigned a representative drought category reflecting its predominant severity level composition.
@@ -109,14 +112,7 @@ To generate the heatmap for Drought data, the user must obtain the data from the
 
 2. **Clean the Data**:
    - Retain only the following columns:
-     - `MapDate`
-     - `None`
-     - `D0`
-     - `D1`
-     - `D2`
-     - `D3`
-     - `D4`
-     - `ValidStart`.
+     - `MapDate`, `None`, `D0`,`D1`,`D2`,`D3`,`D4`,`ValidStart`.
 
 ```{r}
 # Example code for cleaning data
@@ -197,7 +193,7 @@ out <- drought_main(X, start_date = "2001-01-01", end_date = "2021-06-01")
 ```
 
 
-From the plot above we can observe that in weeks 0 - 300 
+From the plot above we can observe that Week 0 corresponds to January 1, 2001, and Week 1065 corresponds to June 1, 2021, establishing a continuous temporal span of twenty years along the heatmap’s vertical axis. During the years in the beginning of the series (2001–2005), the visualization mostly exhibits green tiles, signifying "no drought" (None) conditions and indicating relatively mild climate patterns across most counties. As the timeline progresses into the mid-2010s, which is a period well-known to have been experiencing severe drought episodes in California, the color values shift toward yellows, oranges, and reds, reflecting an escalation to more severe drought levels (D2–D4). Counties situated in inland, agricultural regions (i.e. Central Valley) frequently manifest these higher-intensity drought color values for longer durations, suggesting a greater susceptibility to chronic moisture deficits. In contrast, coastal and northern counties tend to display intermittent or less intense drought signals (e.g., persistent greens and lighter yellows), suggesting that these areas may have benefited from comparatively milder drought conditions, perhaps due to their proximity to the ocean and less drought prone-climates.
 
 ##### Plotting the Time Series Plot for the ENSO Data:
 
