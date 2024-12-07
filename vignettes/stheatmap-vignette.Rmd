@@ -51,6 +51,35 @@ In this package demo we visualize California Drought data taken from US Drought 
   - **Plot 2**: ENSO barplot using Rolling Avg Smoother
 
 
+
+### Clustering Algorithm For Assigning Drought Severity
+
+Each county-week observation is represented as a \(p\)-dimensional vector:
+\[
+x_i = (x_{i1}, x_{i2}, \dots, x_{ip})
+\]
+where \(x_{il}\) is the average percentage for drought severity category \(l\) in observation \(i\).
+
+To measure dissimilarity between observations \(x_i\) and \(x_j\), we use the Euclidean distance:
+\[
+d(x_i, x_j) = \sqrt{\sum_{l=1}^p (x_{il} - x_{jl})^2}.
+\]
+
+For hierarchical clustering with average linkage, the distance between two clusters \(C_u\) and \(C_v\) is defined as the average of all pairwise distances between their members:
+\[
+D_{\text{avg}}(C_u, C_v) = \frac{1}{|C_u| \cdot |C_v|} \sum_{x_i \in C_u} \sum_{x_j \in C_v} d(x_i, x_j),
+\]
+where \(|C_u|\) and \(|C_v|\) are the sizes of clusters \(C_u\) and \(C_v\).
+
+The algorithm proceeds by:
+1. Initializing each observation as its own cluster.
+2. Merging the two closest clusters based on the above distance metric.
+3. Recomputing distances until \(K=6\) clusters remain.
+
+Cutting the resulting dendrogram at the height corresponding to \(K\) clusters provides the final grouping, and each cluster is assigned a representative drought category reflecting its predominant severity level composition.
+
+
+
 ### Installation 
 
 To begin, install and load `stheatmap`:
