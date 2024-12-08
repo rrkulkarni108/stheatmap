@@ -39,9 +39,11 @@ devtools::install_github("rrkulkarni108/stheatmap", build_vignettes = TRUE)
     # load dataset that comes with package
     load(Data/Drought.rda)
 
-    # user is interested to subset drought data from January 1, 2021 to January 1, 2006
-    drought_main(Drought, start_date = "2001-01-01", end_date = "2006-01-01")
+    # user is interested to subset drought data from January 1, 2001 to June 1, 2021
+    drought_main(Drought, start_date = "2001-01-01", end_date = "2021-06-01")
+
     ```
+    ![image](https://github.com/user-attachments/assets/37afb80d-d7a6-45f9-9957-a911c8f13eb3)
 * `enso_main(data, StartDate, EndDate)`
    * Plot 1 : Time Series Line Plot for Overall Trend at a glance
    * Plot 2:  ENSO barplot using Rolling Avg Smoother
