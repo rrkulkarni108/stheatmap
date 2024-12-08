@@ -46,6 +46,8 @@ devtools::install_github("rrkulkarni108/stheatmap", build_vignettes = TRUE)
     ![image](https://github.com/user-attachments/assets/37afb80d-d7a6-45f9-9957-a911c8f13eb3)
 * `enso_main(data, StartDate, EndDate)`
    * Plot 1 : Time Series Line Plot for Overall Trend at a glance
+     ![image](https://github.com/user-attachments/assets/5d06b4db-50f4-4d03-826e-2e9ffac7e957)
+ 
    * Plot 2:  ENSO barplot using Rolling Avg Smoother
    *   **Example** usage:
         ```
@@ -55,6 +57,8 @@ devtools::install_github("rrkulkarni108/stheatmap", build_vignettes = TRUE)
         # user is interested to subset ENSO data from January 1, 2021 to January 1, 2006
         enso_main(ENSO, StartDate = "2001-01-01", EndDate = "2006-01-01")
         ```
+        ![image](https://github.com/user-attachments/assets/4ab7c85f-7938-4189-948b-67b39b5f08fb)
+
 
 ### ENSO Data Usage:
 * You must use the datatable from [National Weather Service, Climate Prediction Center](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php) as input to the `enso_main()` function.
